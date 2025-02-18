@@ -1,0 +1,357 @@
+[
+{
+    "date": "February 14, 2025",
+    "type": "Pull",
+    "reps": "6,6,6,6,6,6,6,5,5,5",
+    "extraInfo": "archBack,pause,strict"
+  },
+{
+    "date": "February 12, 2025",
+    "type": "Pull",
+    "reps": "14,12,11",
+    "extraInfo": "archBack,pause,strict"
+  },
+{
+    "date": "February 10, 2025",
+    "type": "Pull",
+    "reps": "6,6,5,5,5",
+    "extraInfo": "archBack,pause,strict"
+  },
+{
+    "date": "February 7, 2025",
+    "type": "Pull",
+    "reps": "6,6,6,6,6,5,5,5,5,5",
+    "extraInfo": "archBack,pause,strict"
+  },
+{
+    "date": "February 5, 2025",
+    "type": "Pull",
+    "reps": "13,11,11",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "February 3, 2025",
+    "type": "Pull",
+    "reps": "5,5,5,4,4",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "January 31, 2025",
+    "type": "Pull",
+    "reps": "5,5,5,5,5,5,5,5,5,5",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "January 28, 2025",
+    "type": "Pull",
+    "reps": "13,11,10",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "January 24, 2025",
+    "type": "Pull",
+    "reps": "6,6,5,5,4",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "January 21, 2025",
+    "type": "Pull",
+    "reps": "6,6,6,6,6,6,5,5,5,5",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "January 19, 2025",
+    "type": "Pull",
+    "reps": "11,10,10",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "January 17, 2025",
+    "type": "Pull",
+    "reps": "6,5,5,4,4",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "January 15, 2025",
+    "type": "Pull",
+    "reps": "6,6,6,6,6,6,6,6,5,5",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "January 10, 2025",
+    "type": "Pull",
+    "reps": "11,10,10",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "January 8, 2025",
+    "type": "Pull",
+    "reps": "5,5,4,4,4",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "January 6, 2025",
+    "type": "Pull",
+    "reps": "6,6,6,6,6,5,5,4,4,4",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "January 3, 2025",
+    "type": "Pull",
+    "reps": "7,6,5,5,5",
+    "extraInfo": "archBack,strict"
+  },
+  {
+    "date": "January 1, 2025",
+    "type": "Pull",
+    "reps": "6,6,6,5,5",
+    "extraInfo": "archBack,pause,strict, +10lbs,"
+  },
+  {
+    "date": "December 30, 2024",
+    "type": "Pull",
+    "reps": "6,5,5,5,5",
+    "extraInfo": "archBack,strict"
+  },
+  {
+    "date": "December 28, 2024",
+    "type": "Pull",
+    "reps": "5,5,5,5,5,5,5,5,5,5",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "December 26, 2024",
+    "type": "Pull",
+    "reps": "7,7,7,6,6,6,5,5,4,4",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "December 24, 2024",
+    "type": "Pull",
+    "reps": "10,10,10",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "December 22, 2024",
+    "type": "Pull",
+    "reps": "6,5,5,4,4",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "December 19, 2024",
+    "type": "Pull",
+    "reps": "7,7,7,6,6,6,5,5,5,5",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "December 17, 2024",
+    "type": "Pull",
+    "reps": "18,16,15",
+    "extraInfo": "archBack,strict"
+  },
+  {
+    "date": "December 13, 2024",
+    "type": "Pull",
+    "reps": "6,6,6,6,6,6,5,5,5,4",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "December 11, 2024",
+    "type": "Pull",
+    "reps": "10,8,0",
+    "extraInfo": "#ERROR!"
+  },
+  {
+    "date": "December 9, 2024",
+    "type": "Pull",
+    "reps": "6,5,5,4,4",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "December 7, 2024",
+    "type": "Pull",
+    "reps": "6,6,6,6,6,5,5,4,4,4",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "December 5, 2024",
+    "type": "Pull",
+    "reps": "10,10,10",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "December 3, 2024",
+    "type": "Pull",
+    "reps": "5,5,5,4,4",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "December 1, 2024",
+    "type": "Pull",
+    "reps": "5,5,5,5,5,5,5,5,5,5",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "November 29, 2024",
+    "type": "Pull",
+    "reps": "10,10,10",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "November 27, 2024",
+    "type": "Pull",
+    "reps": "6,6,6,6,6",
+    "extraInfo": "archBack,strict"
+  },
+  {
+    "date": "November 25, 2024",
+    "type": "Pull",
+    "reps": "7,7,7,7,7,7,7,5,5,5",
+    "extraInfo": "archBack,strict"
+  },
+  {
+    "date": "November 23, 2024",
+    "type": "Pull",
+    "reps": "18,16,15",
+    "extraInfo": "archBack,strict"
+  },
+  {
+    "date": "November 21, 2024",
+    "type": "Pull",
+    "reps": "6,6,6,6,6",
+    "extraInfo": "archBack,strict"
+  },
+  {
+    "date": "November 18, 2024",
+    "type": "Pull",
+    "reps": "6,6,6,6,6,6,6,6,6,6",
+    "extraInfo": "archBack,strict"
+  },
+  {
+    "date": "November 16, 2024",
+    "type": "Pull",
+    "reps": "13,12,14",
+    "extraInfo": "archBack,strict"
+  },
+  {
+    "date": "November 14, 2024",
+    "type": "Pull",
+    "reps": "6,5,5,5,5",
+    "extraInfo": "archBack,strict"
+  },
+  {
+    "date": "November 12, 2024",
+    "type": "Pull",
+    "reps": "6,6,6,6,6,6,5,5,5,5",
+    "extraInfo": "archBack,strict"
+  },
+  {
+    "date": "November 7, 2024",
+    "type": "Pull",
+    "reps": "6,6,5,5,5,5,5,5,5,5",
+    "extraInfo": "archBack,strict"
+  },
+  {
+    "date": "November 5, 2024",
+    "type": "Pull",
+    "reps": "10,10,10",
+    "extraInfo": "archBack,strict"
+  },
+  {
+    "date": "November 3, 2024",
+    "type": "Pull",
+    "reps": "5,5,4,4,4",
+    "extraInfo": "archBack,strict"
+  },
+  {
+    "date": "October 30, 2024",
+    "type": "Pull",
+    "reps": "6,5,4,4,4",
+    "extraInfo": "archBack,strict"
+  },
+  {
+    "date": "October 28, 2024",
+    "type": "Pull",
+    "reps": "5,5,5,5,5,4,4,4,4,4",
+    "extraInfo": "archBack,strict"
+  },
+  {
+    "date": "October 26, 2024",
+    "type": "Pull",
+    "reps": "10,9,9",
+    "extraInfo": "archBack,strict"
+  },
+  {
+    "date": "October 25, 2024",
+    "type": "Pull",
+    "reps": "5,4,4,3,3",
+    "extraInfo": "archBack,pause,strict"
+  },
+  {
+    "date": "October 22, 2024",
+    "type": "Pull",
+    "reps": "4,4,4,4,4,4,4,4,4,4",
+    "extraInfo": "archBack,strict"
+  },
+  {
+    "date": "October 20, 2024",
+    "type": "Pull",
+    "reps": "5,4,4,4,4",
+    "extraInfo": "archBack,strict"
+  },
+  {
+    "date": "October 6, 2024",
+    "type": "Pull",
+    "reps": "8,7,7,6,6",
+    "extraInfo": ""
+  },
+  {
+    "date": "October 3, 2024",
+    "type": "Pull",
+    "reps": "8,8,8,8,8,8,7,7,6,6",
+    "extraInfo": ""
+  },
+  {
+    "date": "October 1, 2024",
+    "type": "Pull",
+    "reps": "18,17,16",
+    "extraInfo": ""
+  },
+  {
+    "date": "September 28, 2024",
+    "type": "Pull",
+    "reps": "7,7,6,6,6",
+    "extraInfo": ""
+  },
+  {
+    "date": "September 26, 2024",
+    "type": "Pull",
+    "reps": "7,7,7,7,7,7,7,7,7,7",
+    "extraInfo": ""
+  },
+  {
+    "date": "September 24, 2024",
+    "type": "Pull",
+    "reps": "16,15,14",
+    "extraInfo": ""
+  },
+  {
+    "date": "September 21, 2024",
+    "type": "Pull",
+    "reps": "7,6,6,5,5",
+    "extraInfo": ""
+  },
+  {
+    "date": "September 19, 2024",
+    "type": "Pull",
+    "reps": "7,7,7,7,7,6,6,6,6,5",
+    "extraInfo": ""
+  },
+  {
+    "date": "September 17, 2024",
+    "type": "Pull",
+    "reps": "13,12,11",
+    "extraInfo": ""
+  }
+]
+
