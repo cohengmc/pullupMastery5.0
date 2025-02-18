@@ -20,6 +20,7 @@ import {
 import workoutData from "../data/workoutData.json"
 import { WorkoutPopup } from "./workout-popup"
 import { cn } from "@/lib/utils"
+import React from "react"
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Progress"]
 
@@ -160,7 +161,7 @@ export function WorkoutCalendar({ className }: { className?: string }) {
               </div>
             ))}
             {calendarWeeks.map((week, weekIndex) => (
-              <>
+              <React.Fragment key={`week-${weekIndex}`}>
                 {week.map((day, dayIndex) => {
                   const hasWorkout = workoutDates.some((workout) => isSameDay(workout.date, day))
                   const isCurrentMonth = isSameMonth(day, currentDate)
@@ -183,7 +184,7 @@ export function WorkoutCalendar({ className }: { className?: string }) {
                 <div key={`progress-${weekIndex}`} className="aspect-square flex items-center justify-center">
                   {getProgressSymbol(getWorkoutsInWeek(week))}
                 </div>
-              </>
+              </React.Fragment>
             ))}
           </div>
         </CardContent>
