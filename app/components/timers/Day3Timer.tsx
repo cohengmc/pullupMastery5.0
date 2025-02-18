@@ -126,7 +126,7 @@ export default function TimerApp({ workoutType, onWorkoutComplete }: TimerAppPro
               </div>
             </div>
             <div className="relative w-40 h-40">
-              <ProgressCircle progress={progress} seconds={timeLeft > 0 ? timeLeft : null} />
+              <ProgressCircle progress={progress} seconds={timeLeft > 0 ? timeLeft.toString() : null} />
             </div>
           </div>
         </div>

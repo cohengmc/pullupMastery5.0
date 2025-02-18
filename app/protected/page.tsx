@@ -3,12 +3,12 @@ import { createClient } from "@/utils/supabase/server";
 import { InfoIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { WorkoutHistory } from "./components/workout-history";
-import { WorkoutHeatmap } from "./components/workout-heatmap";
-import { WorkoutCalendar } from "./components/workout-calendar";
-import { ThemeToggle } from "./components/theme-toggle";
-import { AddWorkoutForm } from "./components/add-workout-form";
-import { WorkoutProgressChart } from "./components/workout-progress-chart";
+import { WorkoutHistory } from "../components/workout-history";
+import { WorkoutHeatmap } from "../components/workout-heatmap";
+import { WorkoutCalendar } from "../components/workout-calendar";
+import { ThemeToggle } from "../components/theme-toggle";
+import { AddWorkoutForm } from "../components/add-workout-form";
+import { WorkoutProgressChart } from "../components/workout-progress-chart";
 
 const workouts = [
   {
