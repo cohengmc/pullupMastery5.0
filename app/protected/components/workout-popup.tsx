@@ -9,7 +9,7 @@ interface WorkoutPopupProps {
     totalReps: number
   }
   position: { x: number; y: number }
-  calendarRect: DOMRect
+  calendarRect: DOMRect | null
 }
 
 export function WorkoutPopup({ workout, position, calendarRect }: WorkoutPopupProps) {
