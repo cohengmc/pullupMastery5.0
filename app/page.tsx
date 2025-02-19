@@ -12,7 +12,7 @@ const workouts = [
   },
   {
     name: "Sub Max Volume",
-    slug: "sub-max-volume", 
+    slug: "sub-max-volume",
     description: "10 sets with 1 minute rest",
   },
   {
@@ -24,36 +24,35 @@ const workouts = [
 
 export default async function Home() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <main className="max-w-5xl mx-auto p-6 sm:p-8 md:p-12 lg:p-16">
-        <div className="space-y-6">
-          <h1 className="text-3xl sm:text-4xl font-light tracking-wider">
-            Pull Up Mastery
-          </h1>
+    <div className="bg-background text-foreground p-2 sm:p-4 md:p-8 lg:p-12 transition-colors">
+      <div className="max-w-5xl mx-auto space-y-12">
+        <h1 className="text-4xl sm:text-5xl font-light tracking-wider">
+          Pull Up Mastery
+        </h1>
 
-          <div className="bg-gray-900/30 dark:bg-gray-900/30 rounded-xl p-4 sm:p-6 transition-colors">
-            <h2 className="text-xl sm:text-2xl font-light text-gray-400 mb-4">
-              Select Your Workout
-            </h2>
-            <div className="grid gap-3">
-              {workouts.map((workout) => (
-                <Link
-                  key={workout.slug}
-                  href={`/workout/${workout.slug}`}
-                  className="block"
-                >
-                  <div className="bg-muted/50 hover:bg-muted dark:bg-gray-900/50 dark:hover:bg-gray-900 rounded-xl p-4 transition-colors">
-                    <h3 className="text-xl font-light mb-1">{workout.name}</h3>
-                    <p className="text-cyan-400/80 text-sm">
-                      {workout.description}
-                    </p>
-                  </div>
-                </Link>
-              ))}
-            </div>
+        {/* Workout Selection */}
+        <div className="bg-gray-900/30 dark:bg-gray-900/30 rounded-xl p-4 sm:p-6 transition-colors">
+          <h2 className="text-xl sm:text-2xl font-light text-gray-400 mb-4">
+            Select Your Workout
+          </h2>
+          <div className="grid gap-3">
+            {workouts.map((workout) => (
+              <Link
+                key={workout.slug}
+                href={`/workout/${workout.slug}`}
+                className="block"
+              >
+                <div className="bg-muted/50 hover:bg-muted dark:bg-gray-900/50 dark:hover:bg-gray-900 rounded-xl p-4 transition-colors">
+                  <h3 className="text-xl font-light mb-1">{workout.name}</h3>
+                  <p className="text-cyan-400/80 text-sm">
+                    {workout.description}
+                  </p>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
