@@ -29,7 +29,6 @@ const getColorsForWorkout = (sets: number[], type: string) => {
 export function WorkoutProgressChart({ className }: { className?: string }) {
   const [selectedType, setSelectedType] = useState<WorkoutType>("All")
   const [showSets, setShowSets] = useState(true)
-  const [hoveredBar, setHoveredBar] = useState<{ x: number; y: number; data: any } | null>(null)
 
   const chartData = useMemo(() => {
     return workoutData
@@ -76,14 +75,7 @@ export function WorkoutProgressChart({ className }: { className?: string }) {
           <p className="text-cyan-400 font-semibold">{label}</p>
           <p className="text-white">Type: {data.type}</p>
           <p className="text-white">Total: {data.total}</p>
-          {data.originalSets && <p className="text-white">Original Sets: {data.originalSets.join(", ")}</p>}
-          {showSets &&
-            data.originalSets &&
-            data.originalSets.map((set: number, index: number) => (
-              <p key={index} className="text-white">
-                Set {index + 1}: {set} {data.type === "Ladder" ? `(Sum: ${sumLadderSet(set)})` : ""}
-              </p>
-            ))}
+          {data.originalSets && <p className="text-white">Sets: {data.originalSets.join(", ")}</p>}
         </div>
       )
     }
@@ -129,18 +121,6 @@ export function WorkoutProgressChart({ className }: { className?: string }) {
               margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
               barGap={2}
               barSize={18}
-              onMouseMove={(e) => {
-                if (e.isTooltipActive) {
-                  setHoveredBar({
-                    x: e.activeCoordinate?.x || 0,
-                    y: e.activeCoordinate?.y || 0,
-                    data: e.activePayload?.[0].payload,
-                  })
-                } else {
-                  setHoveredBar(null)
-                }
-              }}
-              onMouseLeave={() => setHoveredBar(null)}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" angle={-45} textAnchor="end" height={60} tick={{ fill: "#9CA3AF", fontSize: 12 }} />
@@ -153,7 +133,7 @@ export function WorkoutProgressChart({ className }: { className?: string }) {
                     key={`set${i + 1}`}
                     dataKey={`set${i + 1}`}
                     stackId="a"
-                    fill="rgba(0,0,0,0)" // Set a transparent fill
+                    fill="rgba(0,0,0,0)"
                     name={`Set ${i + 1}`}
                   >
                     {chartData.map((entry, index) => (
@@ -166,17 +146,6 @@ export function WorkoutProgressChart({ className }: { className?: string }) {
               )}
             </BarChart>
           </ResponsiveContainer>
-          {hoveredBar && (
-            <div
-              className="absolute bg-gray-900 p-2 rounded-lg shadow-lg text-white text-sm pointer-events-none"
-              style={{ left: hoveredBar.x + 10, top: hoveredBar.y - 10 }}
-            >
-              <p>Date: {hoveredBar.data.date}</p>
-              <p>Type: {hoveredBar.data.type}</p>
-              <p>Total: {hoveredBar.data.total}</p>
-              {hoveredBar.data.originalSets && <p>Sets: {hoveredBar.data.originalSets.join(", ")}</p>}
-            </div>
-          )}
         </div>
       </CardContent>
     </Card>

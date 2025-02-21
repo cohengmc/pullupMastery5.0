@@ -197,8 +197,8 @@ export function WorkoutCalendar() {
                         ${isToday(day) ? "bg-cyan-400/20" : ""}
                         ${hasWorkout ? "font-semibold" : ""}
                         hover:bg-cyan-400/20 rounded-full`}
-                      onMouseEnter={(e) => handleDayHover(day, e)}
-                      onMouseLeave={handleDayLeave}
+                      // onMouseEnter={(e) => handleDayHover(day, e)}
+                      // onMouseLeave={handleDayLeave}
                     >
                       <span className="z-10">{format(day, "d")}</span>
                       {hasWorkout && <div className="absolute inset-1 bg-cyan-400/20 rounded-full" />}
