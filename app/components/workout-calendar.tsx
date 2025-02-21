@@ -2,106 +2,98 @@
 
 import { useState, useCallback, useRef, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import {
-  parse,
-  format,
-  startOfWeek,
-  endOfWeek,
-  startOfMonth,
-  endOfMonth,
-  eachDayOfInterval,
-  isSameMonth,
-  isSameDay,
-  addMonths,
-  subMonths,
-  isToday,
-} from "date-fns"
-import workoutData from "../data/workoutData.json"
-import { WorkoutPopup } from "./workout-popup"
 import { cn } from "@/lib/utils"
-import React from "react"
+import { createClient } from '@/utils/supabase/client'
+import { DayPickerSingleDateController } from 'react-dates'
+import 'react-dates/initialize'
+import 'react-dates/lib/css/_datepicker.css'
+import 'app/styles/react-dates-overrides.css'
+import moment from 'moment'
+import { WorkoutPopup } from "./workout-popup"
 
-const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Progress"]
+interface Workout {
+  workout_id: number
+  user_id: string
+  workout_date: string
+  reps: number
+  created_at: string
+  updated_at: string
+}
 
 export function WorkoutCalendar({ className }: { className?: string }) {
-  const [currentDate, setCurrentDate] = useState(new Date())
+  const [currentDate, setCurrentDate] = useState(moment())
+  const [workoutDates, setWorkoutDates] = useState<Workout[]>([])
   const [hoveredWorkout, setHoveredWorkout] = useState<{
-    date: Date
-    workout: { type: string; reps: string; totalReps: number }
+    date: moment.Moment
+    workout: { type: string; reps: number; totalReps: number }
     position: { x: number; y: number }
   } | null>(null)
   const calendarRef = useRef<HTMLDivElement>(null)
-  const [calendarRect, setCalendarRect] = useState<DOMRect | null>(null)
 
-  const workoutDates = workoutData.map((workout) => ({
-    ...workout,
-    date: parse(workout.date, "MMMM d, yyyy", new Date()),
-  }))
+  useEffect(() => {
+    const fetchWorkouts = async () => {
+      const supabase = createClient()
+      
+      const { data, error } = await supabase
+        .from('workouts')
+        .select('*')
+        .order('workout_date', { ascending: true })
 
-  const monthStart = startOfMonth(currentDate)
-  const monthEnd = endOfMonth(currentDate)
-  const calendarStart = startOfWeek(monthStart)
-  const calendarEnd = endOfWeek(monthEnd)
-  const calendarDays = eachDayOfInterval({ start: calendarStart, end: calendarEnd })
+      if (error) {
+        console.error('Error fetching workouts:', error)
+        return
+      }
 
-  // Group calendar days into weeks
-  const calendarWeeks = calendarDays.reduce((weeks: Date[][], day, i) => {
-    const weekIndex = Math.floor(i / 7)
-    weeks[weekIndex] = weeks[weekIndex] || []
-    weeks[weekIndex].push(day)
-    return weeks
+      if (data) {
+        setWorkoutDates(data)
+      }
+    }
+
+    fetchWorkouts()
   }, [])
 
-  const getWorkoutsInWeek = (week: Date[]): number => {
-    return workoutDates.filter((workout) => week.some((day) => isSameDay(day, workout.date))).length
-  }
+  const isDayBlocked = useCallback((day: moment.Moment) => {
+    return !workoutDates.some((workout) => 
+      moment(workout.workout_date).isSame(day, 'day')  
+    )
+  }, [workoutDates])
 
-  const getProgressSymbol = (workoutCount: number) => {
-    if (workoutCount >= 3) {
-      return (
-        <span className="material-symbols-outlined text-green-500" style={{ fontVariationSettings: "'FILL' 1" }}>
-          check_circle
-        </span>
-      )
-    } else if (workoutCount === 2) {
-      return (
-        <span className="material-symbols-outlined text-green-500" style={{ fontVariationSettings: "'FILL' 1" }}>
-          clock_loader_60
-        </span>
-      )
-    } else if (workoutCount === 1) {
-      return (
-        <span className="material-symbols-outlined text-green-500" style={{ fontVariationSettings: "'FILL' 1" }}>
-          clock_loader_40
-        </span>
-      )
-    } else {
-      return (
-        <span className="material-symbols-outlined text-green-500" style={{ fontVariationSettings: "'FILL' 0" }}>
-          circle
-        </span>
-      )
-    }
-  }
+  const renderDayContents = useCallback((day: moment.Moment) => {
+    const hasWorkout = workoutDates.some((workout) => 
+      moment(workout.workout_date).isSame(day, 'day')
+    )
 
-  const prevMonth = () => setCurrentDate(subMonths(currentDate, 1))
-  const nextMonth = () => setCurrentDate(addMonths(currentDate, 1))
+    return (
+      <div 
+        className={cn(
+          "aspect-square flex items-center justify-center relative cursor-pointer transition-colors duration-200",
+          !day.isSame(currentDate, 'month') ? "text-gray-600" : "",
+          day.isSame(moment(), 'day') ? "bg-cyan-400/20" : "",
+          hasWorkout ? "font-semibold" : "",
+          "hover:bg-cyan-400/20 rounded-full"
+        )}
+        onMouseEnter={(e) => handleDayHover(day, e)}
+        onMouseLeave={handleDayLeave}
+      >
+        <span className="z-10">{day.format('D')}</span>
+        {hasWorkout && <div className="absolute inset-1 bg-cyan-400/20 rounded-full" />}
+      </div>
+    )
+  }, [currentDate, workoutDates])
 
   const handleDayHover = useCallback(
-    (day: Date, event: React.MouseEvent<HTMLDivElement>) => {
+    (day: moment.Moment, event: React.MouseEvent<HTMLDivElement>) => {
       if (!calendarRef.current) return
 
-      const workout = workoutDates.find((w) => isSameDay(w.date, day))
+      const workout = workoutDates.find((w) => moment(w.workout_date).isSame(day, 'day'))
       if (workout) {
-        const totalReps = workout.reps.split(",").reduce((sum, rep) => sum + Number.parseInt(rep), 0)
         const rect = calendarRef.current.getBoundingClientRect()
         setHoveredWorkout({
           date: day,
           workout: {
-            type: workout.type,
+            type: "workout",
             reps: workout.reps,
-            totalReps,
+            totalReps: workout.reps, // Add total reps
           },
           position: {
             x: event.clientX - rect.left,
@@ -119,20 +111,45 @@ export function WorkoutCalendar({ className }: { className?: string }) {
     setHoveredWorkout(null)
   }, [])
 
-  useEffect(() => {
-    const updateCalendarRect = () => {
-      if (calendarRef.current) {
-        setCalendarRect(calendarRef.current.getBoundingClientRect())
-      }
-    }
+  const getProgressSymbol = useCallback((week: moment.Moment[]) => {
+    const workoutCount = workoutDates.filter((workout) => 
+      week.some((day) => moment(workout.workout_date).isSame(day, 'day'))
+    ).length
 
-    updateCalendarRect()
-    window.addEventListener("resize", updateCalendarRect)
-
-    return () => {
-      window.removeEventListener("resize", updateCalendarRect)
+    if (workoutCount >= 3) {
+      return (
+        <span className="material-symbols-outlined text-green-500" style={{ fontVariationSettings: "'FILL' 1" }}>
+          check_circle
+        </span>
+      )
+    } else if (workoutCount === 2) {
+      return (
+        <span className="material-symbols-outlined text-green-500" style={{ fontVariationSettings: "'FILL' 1" }}>
+          clock_loader_60  
+        </span>
+      )
+    } else if (workoutCount === 1) {
+      return (
+        <span className="material-symbols-outlined text-green-500" style={{ fontVariationSettings: "'FILL' 1" }}>
+          clock_loader_40
+        </span>  
+      )
+    } else {
+      return (
+        <span className="material-symbols-outlined text-green-500" style={{ fontVariationSettings: "'FILL' 0" }}>
+          circle
+        </span>
+      )
     }
-  }, [])
+  }, [workoutDates])
+
+  const renderWeekFooter = useCallback((week: moment.Moment[]) => {
+    return (
+      <div className="aspect-square flex items-center justify-center">
+        {getProgressSymbol(week)}
+      </div>  
+    )
+  }, [getProgressSymbol])
 
   return (
     <>
@@ -142,56 +159,24 @@ export function WorkoutCalendar({ className }: { className?: string }) {
       />
       <Card className={cn("w-full", className)} ref={calendarRef}>
         <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle>Monthly View</CardTitle>
-          <div className="flex items-center space-x-2">
-            <button onClick={prevMonth} className="p-1 rounded-full hover:bg-gray-700">
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-            <span className="text-lg font-semibold">{format(currentDate, "MMMM yyyy")}</span>
-            <button onClick={nextMonth} className="p-1 rounded-full hover:bg-gray-700">
-              <ChevronRight className="w-6 h-6" />
-            </button>
-          </div>
+          <CardTitle>Monthly View</CardTitle>  
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-8 gap-1">
-            {daysOfWeek.map((day) => (
-              <div key={day} className="text-center font-semibold text-gray-400">
-                {day}
-              </div>
-            ))}
-            {calendarWeeks.map((week, weekIndex) => (
-              <React.Fragment key={`week-${weekIndex}`}>
-                {week.map((day, dayIndex) => {
-                  const hasWorkout = workoutDates.some((workout) => isSameDay(workout.date, day))
-                  const isCurrentMonth = isSameMonth(day, currentDate)
-                  return (
-                    <div
-                      key={day.toString() + dayIndex}
-                      className={`aspect-square flex items-center justify-center relative cursor-pointer transition-colors duration-200 
-                        ${!isCurrentMonth ? "text-gray-600" : ""}
-                        ${isToday(day) ? "bg-cyan-400/20" : ""}
-                        ${hasWorkout ? "font-semibold" : ""}
-                        hover:bg-cyan-400/20 rounded-full`}
-                      onMouseEnter={(e) => handleDayHover(day, e)}
-                      onMouseLeave={handleDayLeave}
-                    >
-                      <span className="z-10">{format(day, "d")}</span>
-                      {hasWorkout && <div className="absolute inset-1 bg-cyan-400/20 rounded-full" />}
-                    </div>
-                  )
-                })}
-                <div key={`progress-${weekIndex}`} className="aspect-square flex items-center justify-center">
-                  {getProgressSymbol(getWorkoutsInWeek(week))}
-                </div>
-              </React.Fragment>
-            ))}
-          </div>
+          <DayPickerSingleDateController
+            date={currentDate}
+            onDateChange={setCurrentDate}
+            focused={true}
+            onFocusChange={() => {}}
+            numberOfMonths={1}
+            isDayBlocked={isDayBlocked}
+            renderDayContents={renderDayContents}
+            renderWeekFooter={renderWeekFooter}
+          />
         </CardContent>
         {hoveredWorkout && (
           <WorkoutPopup
             workout={hoveredWorkout.workout}
-            position={hoveredWorkout.position}
+            position={hoveredWorkout.position}  
             calendarRect={calendarRef.current?.getBoundingClientRect() || null}
           />
         )}

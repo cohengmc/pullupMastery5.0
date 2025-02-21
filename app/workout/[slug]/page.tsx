@@ -14,7 +14,7 @@ export default function WorkoutPage({ params }: { params: { slug: string } }) {
   }
 
   return (
-    <div className="h-screen w-full bg-black overflow-hidden">
+    <div className="w-full overflow-hidden">
       {params.slug === 'max-day' && (
         <Day1Timer onWorkoutComplete={handleWorkoutComplete} />
       )}

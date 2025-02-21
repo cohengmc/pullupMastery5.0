@@ -96,10 +96,10 @@ export default function SummaryPage({ params }: { params: { slug: string } }) {
   return (
     <div
       className={cn(
-        "min-h-screen w-full bg-background text-foreground p-4 flex flex-col justify-between overflow-hidden",
+        "w-full h-full bg-background text-foreground p-4 flex flex-col justify-between overflow-hidden",
       )}
     >
-      <div className="max-w-4xl mx-auto w-full flex-grow flex flex-col">
+      <div className="w-full flex-grow flex flex-col">
         <h1 className="text-2xl sm:text-3xl font-light tracking-wider mb-4 text-primary">
           {workoutNames[params.slug as keyof typeof workoutNames]}
         </h1>

@@ -105,7 +105,7 @@ export default function Day1Timer({ onWorkoutComplete }: Day1TimerProps) {
 
   return (
     <div
-      className={cn("h-screen w-full bg-background text-foreground flex items-center justify-center p-4 select-none")}
+      className={cn("w-full bg-background text-foreground flex items-center justify-center p-4 select-none")}
     >
       <div className="w-full max-w-xl">
         <div className="bg-gray-900/50 rounded-3xl p-6">

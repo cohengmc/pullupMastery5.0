@@ -1,0 +1,34 @@
+/* Importing the base styles from react-dates */
+@import 'react-dates/lib/css/_datepicker.css';
+
+/* Hide the keyboard shortcuts panel */
+.DayPickerKeyboardShortcuts_buttonReset {
+  display: none;
+}
+
+/* Selected date or the endpoints of a range of dates */
+.CalendarDay__selected, .CalendarDay__selected:active {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: 1px solid var(--border);
+}
+
+/* Dates that are part of a range but not the end points */
+.CalendarDay__selected_span {
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  border: 1px solid var(--border);
+}
+
+/* Hover styles for selected dates */
+.CalendarDay__selected:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+/* Hover styles for dates within a range */
+.CalendarDay__hovered_span:hover,
+.CalendarDay__hovered_span {
+  background: var(--destructive);
+  color: var(--destructive-foreground);
+} 
