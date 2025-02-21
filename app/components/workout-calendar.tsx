@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useCallback, useRef, useEffect } from "react"
+import { createClient } from '@/utils/supabase/client'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import {
@@ -17,7 +18,6 @@ import {
   subMonths,
   isToday,
 } from "date-fns"
-import workoutData from "../data/workoutData.json"
 import { WorkoutPopup } from "./workout-popup"
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Progress"]
@@ -31,11 +31,37 @@ export function WorkoutCalendar() {
   } | null>(null)
   const calendarRef = useRef<HTMLDivElement>(null)
   const [calendarRect, setCalendarRect] = useState<DOMRect | null>(null)
+  const [workoutDates, setWorkoutDates] = useState<any[]>([])
 
-  const workoutDates = workoutData.map((workout) => ({
-    ...workout,
-    date: parse(workout.date, "MMMM d, yyyy", new Date()),
-  }))
+  const supabase = createClient()
+
+  useEffect(() => {
+    const fetchWorkouts = async () => {
+      const { data, error } = await supabase
+        .from('workouts')
+        .select(`
+          workout_id,
+          user_id,
+          workout_date,
+          reps,
+          created_at,
+          updated_at,
+          workout_extra_info (
+            option_id,
+            extra_info_options (
+              option_name
+            )
+          )
+        `)
+      if (error) console.error("error", error)
+      else setWorkoutDates(data.map(workout => ({
+        ...workout,
+        date: parse(workout.workout_date, "yyyy-MM-dd", new Date()),
+      })))
+    }
+
+    fetchWorkouts()
+  }, [currentDate])
 
   const monthStart = startOfMonth(currentDate)
   const monthEnd = endOfMonth(currentDate)
