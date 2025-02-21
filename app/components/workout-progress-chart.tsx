@@ -73,7 +73,7 @@ export function WorkoutProgressChart({ className }: { className?: string }) {
       return (
         <div className="bg-gray-900 p-4 rounded-lg shadow-lg">
           <p className="text-cyan-400 font-semibold">{label}</p>
-          <p className="text-white">Type: {data.type}</p>
+          <p className="text-white">{data.type}</p>
           <p className="text-white">Total: {data.total}</p>
           {data.originalSets && <p className="text-white">Sets: {data.originalSets.join(", ")}</p>}
         </div>

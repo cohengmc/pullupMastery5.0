@@ -18,17 +18,53 @@ import {
   subMonths,
   isToday,
 } from "date-fns"
-import { WorkoutPopup } from "./workout-popup"
+import { WorkoutForm } from "./workout-form"
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Progress"]
 
+const sumLadderSet = (reps: number) => {
+  return Array.from({ length: reps }, (_, i) => reps - i).reduce((a, b) => a + b, 0)
+}
+
+const CalendarTooltip = ({ workout, date }: { 
+  workout: { 
+    reps: number[]
+    workout_extra_info: Array<{
+      extra_info_options: {
+        option_name: string
+      }
+    }>
+  }
+  date: Date 
+}) => {
+  const type = workout.reps.length === 3 ? "Max Day" : workout.reps.length === 10 ? "Sub Max" : "Ladder"
+
+  const total = type === "Ladder"
+    ? workout.reps.reduce((sum, rep) => sum + sumLadderSet(rep), 0)
+    : workout.reps.reduce((sum, rep) => sum + rep, 0)
+
+  return (
+    
+    <div className="bg-gray-900 p-4 rounded-lg shadow-lgn pointer-events-none z-[1000]">
+    {/* <div className="absolute z-[100] bg-gray-900/95 backdrop-blur-sm p-4 rounded-lg shadow-lg pointer-events-none transform -translate-x-1/2 -translate-y-full border border-gray-800"> */}
+      <p className="text-cyan-400 font-semibold">{format(date, 'MMM d')}</p>
+      <p className="text-white">{type}</p>
+      <p className="text-white">Sets: {workout.reps.join(', ')}</p>
+      <p className="text-white">Total: {total}</p>
+    </div>
+  )
+}
+
 export function WorkoutCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date())
-  const [hoveredWorkout, setHoveredWorkout] = useState<{
+  const [tooltip, setTooltip] = useState<{
+    workout: any
     date: Date
-    workout: { type: string; reps: string; totalReps: number }
-    position: { x: number; y: number }
+    mouseX: number
+    mouseY: number
   } | null>(null)
+  const [selectedDay, setSelectedDay] = useState<Date | null>(null)
+  const [formType, setFormType] = useState<"add" | "edit" | null>(null)
   const calendarRef = useRef<HTMLDivElement>(null)
   const [calendarRect, setCalendarRect] = useState<DOMRect | null>(null)
   const [workoutDates, setWorkoutDates] = useState<any[]>([])
@@ -112,35 +148,29 @@ export function WorkoutCalendar() {
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1))
   const nextMonth = () => setCurrentDate(addMonths(currentDate, 1))
 
-  const handleDayHover = useCallback(
+  const handleDayInteraction = useCallback(
     (day: Date, event: React.MouseEvent<HTMLDivElement>) => {
-      if (!calendarRect) return
-
       const workout = workoutDates.find((w) => isSameDay(w.date, day))
-      if (workout) {
-        const totalReps = workout.reps.split(",").reduce((sum, rep) => sum + Number.parseInt(rep), 0)
-        const rect = event.currentTarget.getBoundingClientRect()
-        setHoveredWorkout({
-          date: day,
-          workout: {
-            type: workout.type,
-            reps: workout.reps,
-            totalReps,
-          },
-          position: {
-            x: rect.left - calendarRect.left,
-            y: rect.top - calendarRect.top,
-          },
-        })
-      } else {
-        setHoveredWorkout(null)
+      
+      if (event.type === "mouseenter") {
+        if (workout) {
+          setTooltip({
+            workout,
+            date: day,
+            mouseX: event.clientX,
+            mouseY: event.clientY
+          })
+        }
+      } else if (event.type === "click") {
+        setSelectedDay(day)
+        setFormType(workout ? "edit" : "add")
       }
     },
-    [workoutDates, calendarRect],
+    [workoutDates]
   )
 
   const handleDayLeave = useCallback(() => {
-    setHoveredWorkout(null)
+    setTooltip(null)
   }, [])
 
   useEffect(() => {
@@ -197,8 +227,9 @@ export function WorkoutCalendar() {
                         ${isToday(day) ? "bg-cyan-400/20" : ""}
                         ${hasWorkout ? "font-semibold" : ""}
                         hover:bg-cyan-400/20 rounded-full`}
-                      // onMouseEnter={(e) => handleDayHover(day, e)}
-                      // onMouseLeave={handleDayLeave}
+                      onMouseEnter={(e) => handleDayInteraction(day, e)}
+                      onMouseLeave={handleDayLeave}
+                      onClick={(e) => handleDayInteraction(day, e)}
                     >
                       <span className="z-10">{format(day, "d")}</span>
                       {hasWorkout && <div className="absolute inset-1 bg-cyan-400/20 rounded-full" />}
@@ -212,11 +243,29 @@ export function WorkoutCalendar() {
             ))}
           </div>
         </CardContent>
-        {hoveredWorkout && calendarRect && (
-          <WorkoutPopup
-            workout={hoveredWorkout.workout}
-            position={hoveredWorkout.position}
-            calendarRect={calendarRect}
+        {tooltip && (
+          <div
+            style={{
+              position: 'fixed',
+              left: tooltip.mouseX,
+              top: tooltip.mouseY - 10,
+            }}
+          >
+            <CalendarTooltip
+              workout={tooltip.workout}
+              date={tooltip.date}
+            />
+          </div>
+        )}
+        {selectedDay && formType && (
+          <WorkoutForm
+            date={selectedDay}
+            formType={formType}
+            workout={workoutDates.find((w) => isSameDay(w.date, selectedDay))}
+            onClose={() => {
+              setSelectedDay(null)
+              setFormType(null)
+            }}
           />
         )}
       </Card>
