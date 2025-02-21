@@ -71,31 +71,31 @@ export function WorkoutCalendar() {
 
   const supabase = createClient()
 
-  useEffect(() => {
-    const fetchWorkouts = async () => {
-      const { data, error } = await supabase
-        .from('workouts')
-        .select(`
-          workout_id,
-          user_id,
-          workout_date,
-          reps,
-          created_at,
-          updated_at,
-          workout_extra_info (
-            option_id,
-            extra_info_options (
-              option_name
-            )
+  const fetchWorkouts = async () => {
+    const { data, error } = await supabase
+      .from('workouts')
+      .select(`
+        workout_id,
+        user_id,
+        workout_date,
+        reps,
+        created_at,
+        updated_at,
+        workout_extra_info (
+          option_id,
+          extra_info_options (
+            option_name
           )
-        `)
-      if (error) console.error("error", error)
-      else setWorkoutDates(data.map(workout => ({
-        ...workout,
-        date: parse(workout.workout_date, "yyyy-MM-dd", new Date()),
-      })))
-    }
+        )
+      `)
+    if (error) console.error("error", error)
+    else setWorkoutDates(data.map(workout => ({
+      ...workout,
+      date: parse(workout.workout_date, "yyyy-MM-dd", new Date()),
+    })))
+  }
 
+  useEffect(() => {
     fetchWorkouts()
   }, [currentDate])
 
@@ -266,6 +266,7 @@ export function WorkoutCalendar() {
               setSelectedDay(null)
               setFormType(null)
             }}
+            onWorkoutChange={fetchWorkouts}
           />
         )}
       </Card>

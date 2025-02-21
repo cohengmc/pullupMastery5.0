@@ -2,28 +2,34 @@
 
 import { useState, useEffect } from "react"
 import { format } from "date-fns"
+import { createClient } from '@/utils/supabase/client'
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { toast } from "sonner"
 
 interface WorkoutFormProps {
   date: Date
   formType: "add" | "edit"
   workout?: {
+    workout_id?: number
     workout_date: string
     reps: number[]
     workout_extra_info: Array<{
+      option_id: number
       extra_info_options: {
         option_name: string
       }
     }>
   }
   onClose: () => void
+  onWorkoutChange: () => void
 }
 
-export function WorkoutForm({ date, formType, workout, onClose }: WorkoutFormProps) {
+export function WorkoutForm({ date, formType, workout, onClose, onWorkoutChange }: WorkoutFormProps) {
+  const supabase = createClient()
   const [workoutType, setWorkoutType] = useState("max-day")
   const [reps, setReps] = useState<number[]>([0, 0, 0])
   const [extraInfo, setExtraInfo] = useState("")
@@ -61,16 +67,100 @@ export function WorkoutForm({ date, formType, workout, onClose }: WorkoutFormPro
   }
 
   const handleSubmit = async () => {
-    const workoutData = {
-      workout_date: format(date, "yyyy-MM-dd"),
-      reps: reps,
-      // Add any extra info handling here
+    try {
+      const workoutData = {
+        workout_date: format(date, "yyyy-MM-dd"),
+        reps,
+        user_id: (await supabase.auth.getUser()).data.user?.id
+      }
+
+      if (formType === "add") {
+        // Create new workout
+        const { data, error } = await supabase
+          .from('workouts')
+          .insert([workoutData])
+          .select()
+
+        if (error) throw error
+
+        // Add workout type to workout_extra_info
+        if (data?.[0]?.workout_id) {
+          const extraInfoData = {
+            workout_id: data[0].workout_id,
+            option_id: workoutType === "max-day" ? 1 
+                      : workoutType === "sub-max-volume" ? 2 
+                      : 3 // Assuming these are your option_ids in extra_info_options
+          }
+
+          const { error: extraInfoError } = await supabase
+            .from('workout_extra_info')
+            .insert([extraInfoData])
+
+          if (extraInfoError) throw extraInfoError
+        }
+
+        toast.success("Workout added successfully")
+      } else if (formType === "edit" && workout?.workout_id) {
+        // Update existing workout
+        const { error: updateError } = await supabase
+          .from('workouts')
+          .update(workoutData)
+          .eq('workout_id', workout.workout_id)
+
+        if (updateError) throw updateError
+
+        // Update workout type in workout_extra_info
+        const extraInfoData = {
+          option_id: workoutType === "max-day" ? 1 
+                    : workoutType === "sub-max-volume" ? 2 
+                    : 3
+        }
+
+        const { error: extraInfoError } = await supabase
+          .from('workout_extra_info')
+          .update(extraInfoData)
+          .eq('workout_id', workout.workout_id)
+
+        if (extraInfoError) throw extraInfoError
+
+        toast.success("Workout updated successfully")
+      }
+
+      onWorkoutChange()
+      onClose()
+    } catch (error) {
+      console.error('Error saving workout:', error)
+      toast.error("Failed to save workout")
     }
+  }
 
-    // In a real application, you would send this data to your backend
-    console.log(formType === "add" ? "New workout:" : "Updated workout:", workoutData)
+  const handleDelete = async () => {
+    if (!workout?.workout_id || formType !== "edit") return
 
-    onClose()
+    try {
+      // Delete workout_extra_info first (due to foreign key constraint)
+      const { error: extraInfoError } = await supabase
+        .from('workout_extra_info')
+        .delete()
+        .eq('workout_id', workout.workout_id)
+
+      if (extraInfoError) throw extraInfoError
+
+      // Then delete the workout
+      const { error: workoutError } = await supabase
+        .from('workouts')
+        .delete()
+        .eq('workout_id', workout.workout_id)
+
+      if (workoutError) throw workoutError
+
+      toast.success("Workout deleted successfully")
+      onWorkoutChange()
+      onClose()
+    } catch (error) {
+      console.error('Error deleting workout:', error)
+      toast.error("Failed to delete workout")
+    }
   }
 
   return (
@@ -129,10 +219,17 @@ export function WorkoutForm({ date, formType, workout, onClose }: WorkoutFormPro
           </div>
         </div>
         <div className="flex justify-end space-x-2">
+          {formType === "edit" && (
+            <Button onClick={handleDelete} variant="destructive">
+              Delete
+            </Button>
+          )}
           <Button onClick={onClose} variant="outline">
             Cancel
           </Button>
-          <Button onClick={handleSubmit}>{formType === "add" ? "Add Workout" : "Save Changes"}</Button>
+          <Button onClick={handleSubmit}>
+            {formType === "add" ? "Add Workout" : "Save Changes"}
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
