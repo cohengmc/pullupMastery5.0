@@ -1,13 +1,14 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { format, parse } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { Bar, BarChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import workoutData from "../data/workoutData.json"
+import { useWorkouts } from "@/hooks/use-workouts"
+import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 
 type WorkoutType = "All" | "Max Day" | "Sub Max" | "Ladder"
@@ -29,11 +30,14 @@ const getColorsForWorkout = (sets: number[], type: string) => {
 export function WorkoutProgressChart({ className }: { className?: string }) {
   const [selectedType, setSelectedType] = useState<WorkoutType>("All")
   const [showSets, setShowSets] = useState(true)
+  const { workouts, loading, error } = useWorkouts()
 
   const chartData = useMemo(() => {
-    return workoutData
+    if (!workouts.length) return []
+
+    return workouts
       .map((workout) => {
-        const sets = workout.reps.split(",").map(Number)
+        const sets = workout.reps
         const type = sets.length === 3 ? "Max Day" : sets.length === 10 ? "Sub Max" : "Ladder"
 
         if (selectedType !== "All" && type !== selectedType) return null
@@ -43,7 +47,7 @@ export function WorkoutProgressChart({ className }: { className?: string }) {
         const colors = getColorsForWorkout(sets, type)
 
         return {
-          date: format(parse(workout.date, "MMMM d, yyyy", new Date()), "MMM d"),
+          date: format(parseISO(workout.workout_date), "MMM d"),
           type,
           total,
           originalSets: sets,
@@ -58,14 +62,32 @@ export function WorkoutProgressChart({ className }: { className?: string }) {
             )),
         }
       })
-      .filter(Boolean)
+      .filter((item): item is NonNullable<typeof item> => item !== null)
       .reverse()
-  }, [selectedType, showSets])
+  }, [workouts, selectedType, showSets])
 
   const maxValue = useMemo(() => {
+    if (!chartData.length) return 100
     const max = Math.max(...chartData.map((data) => data.total))
-    return Math.ceil(max / 10) * 10 + 10 // Round up to nearest 10 and add 10 for padding
+    return Math.ceil(max / 10) * 10 + 10
   }, [chartData])
+
+  if (loading) {
+    return <Skeleton className="w-full h-[500px]" />
+  }
+
+  if (error || !chartData.length) {
+    return (
+      <Card className={cn("w-full", className)}>
+        <CardHeader>
+          <CardTitle>Workout Progress</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-muted-foreground text-center py-4">No workout data available</div>
+        </CardContent>
+      </Card>
+    )
+  }
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -137,7 +159,11 @@ export function WorkoutProgressChart({ className }: { className?: string }) {
                     name={`Set ${i + 1}`}
                   >
                     {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.colors[i]} style={{ padding: "0.5px 0" }} />
+                      <Cell 
+                        key={`cell-${index}`} 
+                        fill={entry.colors[i] || "#CCCCCC"} 
+                        style={{ padding: "0.5px 0" }} 
+                      />
                     ))}
                   </Bar>
                 ))

@@ -4,8 +4,9 @@ import { useMemo } from "react"
 import { Group } from "@visx/group"
 import { HeatmapRect } from "@visx/heatmap"
 import { scaleLinear } from "@visx/scale"
-import workoutData from "../data/workoutData.json"
-import { parse, eachDayOfInterval, subDays, isSameDay } from "date-fns"
+import { eachDayOfInterval, subDays, isSameDay, parseISO } from "date-fns"
+import { useWorkouts } from "@/hooks/use-workouts"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface BinDatum {
   bin: number
@@ -31,8 +32,12 @@ const bins = (d: Bin) => d.bins
 const count = (d: BinDatum) => d.count
 
 export function DailyHeatmap() {
+  const { workouts, loading, error } = useWorkouts()
+
   // Process workout data into heatmap format
   const data = useMemo(() => {
+    if (!workouts.length) return []
+
     const today = new Date()
     const startDate = subDays(today, days)
 
@@ -40,7 +45,7 @@ export function DailyHeatmap() {
     const datesInRange = eachDayOfInterval({ start: startDate, end: today })
 
     // Parse workout dates
-    const workoutDates = workoutData.map((workout) => parse(workout.date, "MMMM d, yyyy", new Date()))
+    const workoutDates = workouts.map(workout => parseISO(workout.workout_date))
 
     // Create weeks array (7 days per week)
     const weeks: Bin[] = []
@@ -64,7 +69,15 @@ export function DailyHeatmap() {
     })
 
     return weeks
-  }, [])
+  }, [workouts])
+
+  if (loading) {
+    return <Skeleton className="w-full h-[140px]" />
+  }
+
+  if (error || !data.length) {
+    return <div className="text-muted-foreground text-center py-4">No workout data available</div>
+  }
 
   // Scales
   const xScale = scaleLinear<number>({
@@ -84,7 +97,7 @@ export function DailyHeatmap() {
 
   const opacityScale = scaleLinear<number>({
     domain: [0, bucketSizeMax],
-    range: [0.3, 1], // Increased the minimum opacity from 0.1 to 0.3
+    range: [0.3, 1],
   })
 
   return (

@@ -1,8 +1,9 @@
 "use client"
 
 import { useMemo } from "react"
-import workoutData from "../data/workoutData.json"
-import { parse, eachWeekOfInterval, endOfWeek, isSameWeek, subWeeks } from "date-fns"
+import { eachWeekOfInterval, endOfWeek, isSameWeek, subWeeks, parseISO } from "date-fns"
+import { useWorkouts } from "@/hooks/use-workouts"
+import { Skeleton } from "@/components/ui/skeleton"
 
 const weeks = 52
 
@@ -26,8 +27,12 @@ const colorMap = {
 }
 
 export function WeeklyHeatmap() {
+  const { workouts, loading, error } = useWorkouts()
+
   // Process workout data into heatmap format
   const weeklyData = useMemo(() => {
+    if (!workouts.length) return []
+
     const today = new Date()
     const startDate = subWeeks(today, weeks - 1)
 
@@ -35,14 +40,22 @@ export function WeeklyHeatmap() {
     const weeksInRange = eachWeekOfInterval({ start: startDate, end: today })
 
     // Parse workout dates
-    const workoutDates = workoutData.map((workout) => parse(workout.date, "MMMM d, yyyy", new Date()))
+    const workoutDates = workouts.map(workout => parseISO(workout.workout_date))
 
     // Count workouts per week
     return weeksInRange.map((weekStart) => {
       const weekEnd = endOfWeek(weekStart)
       return workoutDates.filter((date) => isSameWeek(date, weekStart)).length
     })
-  }, [])
+  }, [workouts])
+
+  if (loading) {
+    return <Skeleton className="w-full h-[140px]" />
+  }
+
+  if (error || !weeklyData.length) {
+    return <div className="text-muted-foreground text-center py-4">No workout data available</div>
+  }
 
   const getBackgroundColor = (count: number) => {
     if (count === 0) return colorMap.none.color
