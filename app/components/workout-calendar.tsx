@@ -37,25 +37,29 @@ const CalendarTooltip = ({ workout, date }: {
   }
   date: Date 
 }) => {
-  const type = workout.reps.length === 3 ? "Max Day" : workout.reps.length === 10 ? "Sub Max" : "Ladder"
+  const type = workout.reps.length === 3 ? "Max Day" 
+              : workout.reps.length === 10 ? "Sub Max" 
+              : "Ladder"
 
   const total = type === "Ladder"
     ? workout.reps.reduce((sum, rep) => sum + sumLadderSet(rep), 0)
     : workout.reps.reduce((sum, rep) => sum + rep, 0)
 
   return (
-    
-    <div className="bg-gray-900 p-4 rounded-lg shadow-lgn pointer-events-none z-[1000]">
-    {/* <div className="absolute z-[100] bg-gray-900/95 backdrop-blur-sm p-4 rounded-lg shadow-lg pointer-events-none transform -translate-x-1/2 -translate-y-full border border-gray-800"> */}
-      <p className="text-cyan-400 font-semibold">{format(date, 'MMM d')}</p>
-      <p className="text-white">{type}</p>
-      <p className="text-white">Sets: {workout.reps.join(', ')}</p>
-      <p className="text-white">Total: {total}</p>
+    <div className="bg-background/95 backdrop-blur-sm p-4 rounded-lg shadow-lg pointer-events-none z-[1000] border border-border">
+      <p className="text-primary font-semibold">{format(date, 'MMM d')}</p>
+      <p className="text-foreground">{type}</p>
+      <p className="text-foreground">Sets: {workout.reps.join(', ')}</p>
+      <p className="text-foreground">Total: {total}</p>
     </div>
   )
 }
 
-export function WorkoutCalendar() {
+interface WorkoutCalendarProps {
+  className?: string;
+}
+
+export function WorkoutCalendar({ className }: WorkoutCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [tooltip, setTooltip] = useState<{
     workout: any
@@ -194,15 +198,15 @@ export function WorkoutCalendar() {
         rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
       />
-      <Card className="w-full relative" ref={calendarRef}>
+      <Card className={`w-full relative ${className || ''}`} ref={calendarRef}>
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle>Monthly View</CardTitle>
           <div className="flex items-center space-x-2">
-            <button onClick={prevMonth} className="p-1 rounded-full hover:bg-gray-700">
+            <button onClick={prevMonth} className="p-1 rounded-full hover:bg-accent">
               <ChevronLeft className="w-6 h-6" />
             </button>
             <span className="text-lg font-semibold">{format(currentDate, "MMMM yyyy")}</span>
-            <button onClick={nextMonth} className="p-1 rounded-full hover:bg-gray-700">
+            <button onClick={nextMonth} className="p-1 rounded-full hover:bg-accent">
               <ChevronRight className="w-6 h-6" />
             </button>
           </div>
@@ -210,7 +214,7 @@ export function WorkoutCalendar() {
         <CardContent>
           <div className="grid grid-cols-8 gap-1">
             {daysOfWeek.map((day) => (
-              <div key={day} className="text-center font-semibold text-gray-400">
+              <div key={day} className="text-center font-semibold text-muted-foreground">
                 {day}
               </div>
             ))}
@@ -223,16 +227,16 @@ export function WorkoutCalendar() {
                     <div
                       key={day.toString() + dayIndex}
                       className={`aspect-square flex items-center justify-center relative cursor-pointer transition-colors duration-200 
-                        ${!isCurrentMonth ? "text-gray-600" : ""}
-                        ${isToday(day) ? "bg-cyan-400/20" : ""}
+                        ${!isCurrentMonth ? "text-muted-foreground/50" : ""}
+                        ${isToday(day) ? "bg-primary/20" : ""}
                         ${hasWorkout ? "font-semibold" : ""}
-                        hover:bg-cyan-400/20 rounded-full`}
+                        hover:bg-primary/20 rounded-full`}
                       onMouseEnter={(e) => handleDayInteraction(day, e)}
                       onMouseLeave={handleDayLeave}
                       onClick={(e) => handleDayInteraction(day, e)}
                     >
                       <span className="z-10">{format(day, "d")}</span>
-                      {hasWorkout && <div className="absolute inset-1 bg-cyan-400/20 rounded-full" />}
+                      {hasWorkout && <div className="absolute inset-1 bg-primary/20 rounded-full" />}
                     </div>
                   )
                 })}

@@ -171,10 +171,10 @@ export default function SummaryPage({ params }: { params: { slug: string } }) {
         </div>
 
         {/* Total Reps Section */}
-        <div className="mt-4 pt-4 border-t border-gray-800">
+        <div className="mt-4 pt-4 border-t border-border">
           <div className="flex justify-between items-center">
             <span className="text-xl sm:text-2xl text-primary font-light">Total Reps:</span>
-            <span className="text-xl sm:text-2xl text-white font-light">{totalReps}</span>
+            <span className="text-xl sm:text-2xl text-foreground font-light">{totalReps}</span>
           </div>
         </div>
 

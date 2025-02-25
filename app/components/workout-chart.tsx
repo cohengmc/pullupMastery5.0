@@ -18,20 +18,29 @@ export function WorkoutChart({ data }: WorkoutChartProps) {
     <div className="w-full h-full bg-gray-900/30 rounded-lg p-3">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={chartData} margin={{ top: 10, right: 10, bottom: 20, left: 10 }}>
-          <XAxis dataKey="set" tickLine={false} axisLine={false} tick={{ fill: "#9CA3AF", fontSize: 12 }} />
+          <XAxis 
+            dataKey="set" 
+            tickLine={false} 
+            axisLine={false} 
+            tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} 
+          />
           <YAxis
             tickLine={false}
             axisLine={false}
-            tick={{ fill: "#9CA3AF", fontSize: 12 }}
+            tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
             tickCount={5}
             domain={[0, "dataMax + 5"]}
           />
           <Tooltip
-            contentStyle={{ backgroundColor: "#1F2937", border: "none", borderRadius: "0.375rem" }}
-            labelStyle={{ color: "#22D3EE" }}
-            itemStyle={{ color: "#FFFFFF" }}
+            contentStyle={{ 
+              backgroundColor: "hsl(var(--background))", 
+              border: "1px solid hsl(var(--border))", 
+              borderRadius: "var(--radius)" 
+            }}
+            labelStyle={{ color: "hsl(var(--primary))" }}
+            itemStyle={{ color: "hsl(var(--foreground))" }}
           />
-          <Bar dataKey="reps" fill="#22D3EE" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="reps" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

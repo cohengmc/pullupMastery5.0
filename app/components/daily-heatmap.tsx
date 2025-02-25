@@ -79,7 +79,7 @@ export function DailyHeatmap() {
 
   const colorScale = scaleLinear<string>({
     domain: [0, colorMax],
-    range: ["rgb(31, 41, 55)", "rgb(34, 211, 238)"], // from a darker gray to cyan-400
+    range: ["hsl(var(--muted))", "hsl(var(--primary))"]
   })
 
   const opacityScale = scaleLinear<number>({

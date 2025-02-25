@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { MultiSelect } from "@/components/multi-select"
 import { toast } from "sonner"
 
 interface WorkoutFormProps {
@@ -28,25 +29,59 @@ interface WorkoutFormProps {
   onWorkoutChange: () => void
 }
 
+interface ExtraInfoOption {
+  value: string
+  label: string
+}
+
 export function WorkoutForm({ date, formType, workout, onClose, onWorkoutChange }: WorkoutFormProps) {
   const supabase = createClient()
   const [workoutType, setWorkoutType] = useState("max-day")
   const [reps, setReps] = useState<number[]>([0, 0, 0])
-  const [extraInfo, setExtraInfo] = useState("")
+  const [extraInfoOptions, setExtraInfoOptions] = useState<ExtraInfoOption[]>([])
+  const [selectedExtraInfo, setSelectedExtraInfo] = useState<string[]>([])
 
+  // Fetch extra info options from Supabase
+  useEffect(() => {
+    const fetchExtraInfoOptions = async () => {
+      const { data, error } = await supabase
+        .from('extra_info_options')
+        .select('option_id, option_name')
+
+      if (error) {
+        console.error('Error fetching extra info options:', error)
+        return
+      }
+
+      setExtraInfoOptions(
+        data.map(option => ({
+          value: option.option_id.toString(),
+          label: option.option_name
+        }))
+      )
+    }
+
+    fetchExtraInfoOptions()
+  }, [])
+
+  // Set initial values when editing
   useEffect(() => {
     if (workout) {
-      // Determine workout type based on number of reps
       const type = workout.reps.length === 3 ? "max-day" 
                   : workout.reps.length === 10 ? "sub-max-volume" 
                   : "ladder-volume"
       setWorkoutType(type)
       setReps(workout.reps)
-      // Handle extra info if needed
+      
+      // Set selected extra info from workout data
+      const selectedInfo = workout.workout_extra_info.map(info => 
+        info.option_id.toString()
+      )
+      setSelectedExtraInfo(selectedInfo)
     } else {
       setWorkoutType("max-day")
       setReps(Array(3).fill(0))
-      setExtraInfo("")
+      setSelectedExtraInfo([])
     }
   }, [workout])
 
@@ -83,18 +118,16 @@ export function WorkoutForm({ date, formType, workout, onClose, onWorkoutChange 
 
         if (error) throw error
 
-        // Add workout type to workout_extra_info
+        // Add workout type and extra info
         if (data?.[0]?.workout_id) {
-          const extraInfoData = {
+          const extraInfoData = selectedExtraInfo.map(optionId => ({
             workout_id: data[0].workout_id,
-            option_id: workoutType === "max-day" ? 1 
-                      : workoutType === "sub-max-volume" ? 2 
-                      : 3 // Assuming these are your option_ids in extra_info_options
-          }
+            option_id: parseInt(optionId)
+          }))
 
           const { error: extraInfoError } = await supabase
             .from('workout_extra_info')
-            .insert([extraInfoData])
+            .insert(extraInfoData)
 
           if (extraInfoError) throw extraInfoError
         }
@@ -109,17 +142,21 @@ export function WorkoutForm({ date, formType, workout, onClose, onWorkoutChange 
 
         if (updateError) throw updateError
 
-        // Update workout type in workout_extra_info
-        const extraInfoData = {
-          option_id: workoutType === "max-day" ? 1 
-                    : workoutType === "sub-max-volume" ? 2 
-                    : 3
-        }
+        // Delete existing extra info
+        await supabase
+          .from('workout_extra_info')
+          .delete()
+          .eq('workout_id', workout.workout_id)
+
+        // Insert new extra info
+        const extraInfoData = selectedExtraInfo.map(optionId => ({
+          workout_id: workout.workout_id,
+          option_id: parseInt(optionId)
+        }))
 
         const { error: extraInfoError } = await supabase
           .from('workout_extra_info')
-          .update(extraInfoData)
-          .eq('workout_id', workout.workout_id)
+          .insert(extraInfoData)
 
         if (extraInfoError) throw extraInfoError
 
@@ -210,12 +247,14 @@ export function WorkoutForm({ date, formType, workout, onClose, onWorkoutChange 
             <Label htmlFor="extra-info" className="text-right">
               Extra Info
             </Label>
-            <Input
-              id="extra-info"
-              value={extraInfo}
-              onChange={(e) => setExtraInfo(e.target.value)}
-              className="col-span-3"
-            />
+            <div className="col-span-3">
+              <MultiSelect
+                options={extraInfoOptions}
+                selected={selectedExtraInfo}
+                onChange={setSelectedExtraInfo}
+                placeholder="Select extra info..."
+              />
+            </div>
           </div>
         </div>
         <div className="flex justify-end space-x-2">

@@ -20,7 +20,7 @@ export function ProgressCircle({ progress, seconds }: ProgressCircleProps) {
     <>
       <svg className="w-full h-full transform -rotate-90" viewBox="0 0 150 150" preserveAspectRatio="xMidYMid meet">
         <circle
-          className="stroke-current text-gray-700"
+          className="stroke-current text-primary/20"
           strokeWidth="14"
           fill="none"
           r="67.5"
@@ -29,7 +29,7 @@ export function ProgressCircle({ progress, seconds }: ProgressCircleProps) {
         />
         <circle
           ref={progressRef}
-          className="stroke-current text-cyan-400 transition-all duration-100 ease-linear"
+          className="stroke-current text-primary transition-all duration-100 ease-linear"
           strokeWidth="16"
           fill="none"
           r="67.5"
@@ -42,7 +42,7 @@ export function ProgressCircle({ progress, seconds }: ProgressCircleProps) {
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
         {seconds !== null && seconds !== "0" && (
-          <div className="text-5xl font-light tracking-wider text-white tabular-nums">
+          <div className="text-5xl font-light tracking-wider text-foreground tabular-nums">
             {seconds}
           </div>
         )}

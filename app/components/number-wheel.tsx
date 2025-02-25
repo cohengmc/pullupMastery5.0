@@ -121,7 +121,7 @@ export default function NumberWheel({
       onTouchStart={handleTouchStart}
       className={cn(
         "relative h-[200px] w-[120px] overflow-hidden bg-black rounded-lg select-none cursor-grab active:cursor-grabbing border-2",
-        value === 'X' ? "border-red-500" : "border-green-500"
+        value === 'X' ? "border-destructive" : "border-green-500"
       )}
       role="slider"
       aria-valuemin={min}

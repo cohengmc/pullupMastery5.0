@@ -49,7 +49,7 @@ export function AddWorkoutForm() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="text-cyan-400">
+        <Button variant="ghost" size="icon" className="text-primary">
           <PenSquare className="h-6 w-6" />
         </Button>
       </DialogTrigger>

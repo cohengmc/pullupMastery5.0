@@ -1,24 +1,71 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { format, parse } from "date-fns"
-import workoutData from "../data/workoutData.json"
+import { createClient } from '@/utils/supabase/client'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight, Trash2, Edit2 } from "lucide-react"
-import { EditWorkoutForm } from "./edit-workout-form"
+import { WorkoutForm } from "./workout-form"
 import { cn } from "@/lib/utils"
 
+interface Workout {
+  workout_id: number
+  workout_date: string
+  reps: number[]
+  workout_extra_info: Array<{
+    option_id: number
+    extra_info_options: {
+      option_name: string
+    }
+  }>
+}
+
 export function WorkoutHistory({ className }: { className?: string }) {
+  const supabase = createClient()
+  const [workouts, setWorkouts] = useState<Workout[]>([])
   const [currentPage, setCurrentPage] = useState(0)
-  const [editingWorkout, setEditingWorkout] = useState<any | null>(null)
+  const [editingWorkout, setEditingWorkout] = useState<Workout | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const itemsPerPage = 10
-  const totalPages = Math.ceil(workoutData.length / itemsPerPage)
+  const totalPages = Math.ceil(workouts.length / itemsPerPage)
 
-  const paginatedData = workoutData.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+  const fetchWorkouts = async () => {
+    setIsLoading(true)
+    try {
+      const { data: workoutData, error: workoutError } = await supabase
+        .from('workouts')
+        .select(`
+          workout_id,
+          workout_date,
+          reps,
+          workout_extra_info (
+            option_id,
+            extra_info_options (
+              option_name
+            )
+          )
+        `)
+        .order('workout_date', { ascending: false })
 
-  const handleEditClick = (workout: any) => {
+      if (workoutError) throw workoutError
+
+      setWorkouts(workoutData || [])
+    } catch (error) {
+      console.error('Error fetching workouts:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchWorkouts()
+  }, [])
+
+  const paginatedData = workouts.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+
+  const handleEditClick = (workout: Workout) => {
     setEditingWorkout(workout)
   }
 
@@ -32,35 +79,36 @@ export function WorkoutHistory({ className }: { className?: string }) {
           <TableHeader>
             <TableRow>
               <TableHead>Date</TableHead>
-              <TableHead>Type</TableHead>
               <TableHead>Reps</TableHead>
               <TableHead>Extra Info</TableHead>
               <TableHead className="w-[100px]"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedData.map((workout, index) => (
-              <TableRow key={index}>
-                <TableCell>{format(parse(workout.date, "MMMM d, yyyy", new Date()), "MMM d, yyyy")}</TableCell>
-                <TableCell>{workout.type}</TableCell>
-                <TableCell>{workout.reps}</TableCell>
-                <TableCell>{workout.extraInfo}</TableCell>
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center">Loading...</TableCell>
+              </TableRow>
+            ) : paginatedData.map((workout) => (
+              <TableRow key={workout.workout_id}>
+                <TableCell>
+                  {format(parse(workout.workout_date, 'yyyy-MM-dd', new Date()), "MMM d, yyyy")}
+                </TableCell>
+                <TableCell>{workout.reps.join(", ")}</TableCell>
+                <TableCell>
+                  {workout.workout_extra_info
+                    .map(info => info.extra_info_options.option_name)
+                    .join(", ")}
+                </TableCell>
                 <TableCell>
                   <div className="flex space-x-2">
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 text-cyan-500 hover:text-cyan-700 hover:bg-cyan-100/10"
+                      className="h-8 w-8 text-primary hover:text-primary/70 hover:bg-primary/10"
                       onClick={() => handleEditClick(workout)}
                     >
                       <Edit2 className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-100/10"
-                    >
-                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </TableCell>
@@ -83,7 +131,18 @@ export function WorkoutHistory({ className }: { className?: string }) {
           </Button>
         </div>
       </CardContent>
-      {editingWorkout && <EditWorkoutForm workout={editingWorkout} onClose={() => setEditingWorkout(null)} />}
+      {editingWorkout && (
+        <WorkoutForm
+          date={parse(editingWorkout.workout_date, 'yyyy-MM-dd', new Date())}
+          formType="edit"
+          workout={editingWorkout}
+          onClose={() => setEditingWorkout(null)}
+          onWorkoutChange={() => {
+            fetchWorkouts()
+            setEditingWorkout(null)
+          }}
+        />
+      )}
     </Card>
   )
 }

@@ -31,8 +31,8 @@ export default async function Home() {
         </h1>
 
         {/* Workout Selection */}
-        <div className="bg-gray-900/30 dark:bg-gray-900/30 rounded-xl p-4 sm:p-6 transition-colors">
-          <h2 className="text-xl sm:text-2xl font-light text-gray-400 mb-4">
+        <div className="bg-card/30 rounded-xl p-4 sm:p-6 transition-colors">
+          <h2 className="text-xl sm:text-2xl font-light text-muted-foreground mb-4">
             Select Your Workout
           </h2>
           <div className="grid gap-3">
@@ -42,9 +42,9 @@ export default async function Home() {
                 href={`/workout/${workout.slug}`}
                 className="block"
               >
-                <div className="bg-muted/50 hover:bg-muted dark:bg-gray-900/50 dark:hover:bg-gray-900 rounded-xl p-4 transition-colors">
+                <div className="bg-muted/50 hover:bg-muted rounded-xl p-4 transition-colors">
                   <h3 className="text-xl font-light mb-1">{workout.name}</h3>
-                  <p className="text-cyan-400/80 text-sm">
+                  <p className="text-primary/80 text-sm">
                     {workout.description}
                   </p>
                 </div>

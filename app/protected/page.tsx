@@ -56,8 +56,8 @@ export default async function ProtectedPage() {
           {/* Row 1: Workout Selection and Calendar */}
           <div className="grid lg:grid-cols-2 gap-6">
             {/* Column 1: Workout Selection */}
-            <div className="bg-gray-900/30 dark:bg-gray-900/30 rounded-xl p-4 sm:p-6 transition-colors">
-              <h2 className="text-xl sm:text-2xl font-light text-gray-400 mb-4">
+            <div className="bg-primary/20 rounded-xl p-4 sm:p-6 transition-colors border border-border">
+              <h2 className="text-xl sm:text-2xl font-light text-muted-foreground mb-4">
                 Select Your Workout
               </h2>
               <div className="grid gap-3">
@@ -67,11 +67,11 @@ export default async function ProtectedPage() {
                     href={`/workout/${workout.slug}`}
                     className="block"
                   >
-                    <div className="bg-muted/50 hover:bg-muted dark:bg-gray-900/50 dark:hover:bg-gray-900 rounded-xl p-4 transition-colors">
+                    <div className="bg-muted/50 hover:bg-muted rounded-xl p-4 transition-colors">
                       <h3 className="text-xl font-light mb-1">
                         {workout.name}
                       </h3>
-                      <p className="text-cyan-400/80 text-sm">
+                      <p className="text-primary/80 text-sm">
                         {workout.description}
                       </p>
                     </div>
@@ -81,17 +81,17 @@ export default async function ProtectedPage() {
             </div>
 
             {/* Column 2: Calendar */}
-            <WorkoutCalendar className="bg-gray-900/30 dark:bg-gray-900/30 rounded-xl p-4 sm:p-6 transition-colors" />
+            <WorkoutCalendar className="bg-primary/20 rounded-xl p-4 sm:p-6 transition-colors" />
           </div>
 
           {/* Row 2: Yearly Activity */}
-          <WorkoutHeatmap className="bg-gray-900/30 dark:bg-gray-900/30 rounded-xl p-4 sm:p-6 transition-colors" />
+          <WorkoutHeatmap className="bg-primary/20 rounded-xl p-4 sm:p-6 transition-colors" />
 
           {/* Row 3: Workout Progress */}
-          <WorkoutProgressChart className="bg-gray-900/30 dark:bg-gray-900/30 rounded-xl p-4 sm:p-6 transition-colors" />
+          <WorkoutProgressChart className="bg-primary/20 rounded-xl p-4 sm:p-6 transition-colors" />
 
           {/* Row 4: Workout History */}
-          <WorkoutHistory className="bg-gray-900/30 dark:bg-gray-900/30 rounded-xl p-4 sm:p-6 transition-colors" />
+          <WorkoutHistory className="bg-primary/20 rounded-xl p-4 sm:p-6 transition-colors" />
         </div>
       </div>
       <div className="flex-1 w-full flex flex-col gap-12">
