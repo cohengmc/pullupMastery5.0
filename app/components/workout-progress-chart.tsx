@@ -63,7 +63,6 @@ export function WorkoutProgressChart({ className }: { className?: string }) {
         }
       })
       .filter((item): item is NonNullable<typeof item> => item !== null)
-      .reverse()
   }, [workouts, selectedType, showSets])
 
   const maxValue = useMemo(() => {
@@ -93,11 +92,11 @@ export function WorkoutProgressChart({ className }: { className?: string }) {
     if (active && payload && payload.length) {
       const data = payload[0].payload
       return (
-        <div className="bg-gray-900 p-4 rounded-lg shadow-lg">
-          <p className="text-cyan-400 font-semibold">{label}</p>
-          <p className="text-white">{data.type}</p>
-          <p className="text-white">Total: {data.total}</p>
-          {data.originalSets && <p className="text-white">Sets: {data.originalSets.join(", ")}</p>}
+        <div className="bg-background/95 backdrop-blur-sm p-4 rounded-lg shadow-lg pointer-events-none z-[1000] border border-border">
+          <p className="text-primary font-semibold">{label}</p>
+          <p className="text-foreground">{data.type}</p>
+          <p className="text-foreground">Sets: {data.originalSets?.join(", ")}</p>
+          <p className="text-foreground">Total: {data.total}</p>
         </div>
       )
     }

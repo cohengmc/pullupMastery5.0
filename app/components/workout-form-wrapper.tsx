@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { WorkoutForm } from "./workout-form";
-import { PenSquare, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 
 export function WorkoutFormWrapper() {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,7 +21,7 @@ export function WorkoutFormWrapper() {
   return (
     <>
       <Button onClick={() => setIsOpen(true)} size="icon" variant="ghost">
-        <PenSquare className="h-6 w-6" />
+        <PlusIcon className="h-5 w-5" />
       </Button>
       {isOpen && (
         <WorkoutForm

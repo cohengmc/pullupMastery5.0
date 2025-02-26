@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useCallback, useRef, useEffect } from "react"
-import { createClient } from '@/utils/supabase/client'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import {
@@ -17,8 +16,12 @@ import {
   addMonths,
   subMonths,
   isToday,
+  parseISO
 } from "date-fns"
 import { WorkoutForm } from "./workout-form"
+import { useWorkouts } from "@/hooks/use-workouts"
+import { Skeleton } from "@/components/ui/skeleton"
+import { cn } from "@/lib/utils"
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Progress"]
 
@@ -71,37 +74,13 @@ export function WorkoutCalendar({ className }: WorkoutCalendarProps) {
   const [formType, setFormType] = useState<"add" | "edit" | null>(null)
   const calendarRef = useRef<HTMLDivElement>(null)
   const [calendarRect, setCalendarRect] = useState<DOMRect | null>(null)
-  const [workoutDates, setWorkoutDates] = useState<any[]>([])
+  const { workouts, loading } = useWorkouts()
 
-  const supabase = createClient()
-
-  const fetchWorkouts = async () => {
-    const { data, error } = await supabase
-      .from('workouts')
-      .select(`
-        workout_id,
-        user_id,
-        workout_date,
-        reps,
-        created_at,
-        updated_at,
-        workout_extra_info (
-          option_id,
-          extra_info_options (
-            option_name
-          )
-        )
-      `)
-    if (error) console.error("error", error)
-    else setWorkoutDates(data.map(workout => ({
-      ...workout,
-      date: parse(workout.workout_date, "yyyy-MM-dd", new Date()),
-    })))
-  }
-
-  useEffect(() => {
-    fetchWorkouts()
-  }, [currentDate])
+  // Process workouts to include parsed dates
+  const workoutDates = workouts.map(workout => ({
+    ...workout,
+    date: parseISO(workout.workout_date)
+  }))
 
   const monthStart = startOfMonth(currentDate)
   const monthEnd = endOfMonth(currentDate)
@@ -192,13 +171,17 @@ export function WorkoutCalendar({ className }: WorkoutCalendarProps) {
     }
   }, [])
 
+  if (loading) {
+    return <Skeleton className="w-full h-[500px]" />
+  }
+
   return (
     <>
       <link
         rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
       />
-      <Card className={`w-full relative ${className || ''}`} ref={calendarRef}>
+      <Card className={cn("w-full relative", className)} ref={calendarRef}>
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle>Monthly View</CardTitle>
           <div className="flex items-center space-x-2">
@@ -270,7 +253,10 @@ export function WorkoutCalendar({ className }: WorkoutCalendarProps) {
               setSelectedDay(null)
               setFormType(null)
             }}
-            onWorkoutChange={fetchWorkouts}
+            onWorkoutChange={() => {
+              setSelectedDay(null)
+              setFormType(null)
+            }}
           />
         )}
       </Card>
