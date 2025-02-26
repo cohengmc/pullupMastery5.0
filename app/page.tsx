@@ -2,7 +2,7 @@ import Hero from "@/components/hero";
 import ConnectSupabaseSteps from "@/components/tutorial/connect-supabase-steps";
 import SignUpUserSteps from "@/components/tutorial/sign-up-user-steps";
 import { hasEnvVars } from "@/utils/supabase/check-env-vars";
-import Link from "next/link";
+import { WorkoutSelection } from "@/components/workout-selection";
 
 const workouts = [
   {
@@ -31,27 +31,7 @@ export default async function Home() {
         </h1>
 
         {/* Workout Selection */}
-        <div className="bg-card/30 rounded-xl p-4 sm:p-6 transition-colors">
-          <h2 className="text-xl sm:text-2xl font-light text-muted-foreground mb-4">
-            Select Your Workout
-          </h2>
-          <div className="grid gap-3">
-            {workouts.map((workout) => (
-              <Link
-                key={workout.slug}
-                href={`/workout/${workout.slug}`}
-                className="block"
-              >
-                <div className="bg-muted/50 hover:bg-muted rounded-xl p-4 transition-colors">
-                  <h3 className="text-xl font-light mb-1">{workout.name}</h3>
-                  <p className="text-primary/80 text-sm">
-                    {workout.description}
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
+        <WorkoutSelection className="bg-card/30" />
       </div>
     </div>
   );

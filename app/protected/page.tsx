@@ -9,6 +9,7 @@ import { WorkoutCalendar } from "../components/workout-calendar";
 import { ThemeToggle } from "../components/theme-toggle";
 import { WorkoutFormWrapper } from "../components/workout-form-wrapper";
 import { WorkoutProgressChart } from "../components/workout-progress-chart";
+import { WorkoutSelection } from "../components/workout-selection";
 
 const workouts = [
   {
@@ -56,29 +57,7 @@ export default async function ProtectedPage() {
           {/* Row 1: Workout Selection and Calendar */}
           <div className="grid lg:grid-cols-2 gap-6">
             {/* Column 1: Workout Selection */}
-            <div className="bg-primary/20 rounded-xl p-4 sm:p-6 transition-colors border border-border">
-              <h2 className="text-xl sm:text-2xl font-light text-muted-foreground mb-4">
-                Select Your Workout
-              </h2>
-              <div className="grid gap-3">
-                {workouts.map((workout) => (
-                  <Link
-                    key={workout.slug}
-                    href={`/workout/${workout.slug}`}
-                    className="block"
-                  >
-                    <div className="bg-muted/50 hover:bg-muted rounded-xl p-4 transition-colors">
-                      <h3 className="text-xl font-light mb-1">
-                        {workout.name}
-                      </h3>
-                      <p className="text-primary/80 text-sm">
-                        {workout.description}
-                      </p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
+            <WorkoutSelection className="border border-border" />
 
             {/* Column 2: Calendar */}
             <WorkoutCalendar className="bg-primary/20 rounded-xl p-4 sm:p-6 transition-colors" />
