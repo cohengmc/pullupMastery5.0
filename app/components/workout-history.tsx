@@ -95,7 +95,7 @@ export function WorkoutHistory({ className }: { className?: string }) {
           workout={editingWorkout}
           onClose={() => setEditingWorkout(null)}
           onWorkoutChange={() => {
-            setEditingWorkout(null)
+            window.location.reload();
           }}
         />
       )}

@@ -10,9 +10,14 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { MultiSelect } from "@/components/multi-select"
 import { toast } from "sonner"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
+import { CalendarIcon } from "lucide-react"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 interface WorkoutFormProps {
-  date: Date
+  date?: Date
   formType: "add" | "edit"
   workout?: {
     workout_id?: number
@@ -34,12 +39,84 @@ interface ExtraInfoOption {
   label: string
 }
 
-export function WorkoutForm({ date, formType, workout, onClose, onWorkoutChange }: WorkoutFormProps) {
+export function WorkoutForm({ date, formType: initialFormType, workout: initialWorkout, onClose, onWorkoutChange }: WorkoutFormProps) {
   const supabase = createClient()
+  const [selectedDate, setSelectedDate] = useState<Date>(date || new Date())
   const [workoutType, setWorkoutType] = useState("max-day")
   const [reps, setReps] = useState<number[]>([0, 0, 0])
   const [extraInfoOptions, setExtraInfoOptions] = useState<ExtraInfoOption[]>([])
   const [selectedExtraInfo, setSelectedExtraInfo] = useState<string[]>([])
+  const [existingWorkout, setExistingWorkout] = useState<typeof initialWorkout | null>(initialWorkout || null)
+  const [formType, setFormType] = useState(initialFormType)
+
+  // Initialize form with initial workout data if provided
+  useEffect(() => {
+    if (initialWorkout) {
+      setExistingWorkout(initialWorkout)
+      const type = initialWorkout.reps.length === 3 ? "max-day" 
+                  : initialWorkout.reps.length === 10 ? "sub-max-volume" 
+                  : "ladder-volume"
+      setWorkoutType(type)
+      setReps(initialWorkout.reps)
+      const selectedInfo = initialWorkout.workout_extra_info.map((info: { option_id: number }) => 
+        info.option_id.toString()
+      )
+      setSelectedExtraInfo(selectedInfo)
+    }
+  }, [initialWorkout])
+
+  // Check for existing workout on date change
+  useEffect(() => {
+    const checkExistingWorkout = async () => {
+      // Skip check if we're editing an existing workout
+      if (initialWorkout) return
+
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const { data, error } = await supabase
+        .from('workouts')
+        .select(`
+          *,
+          workout_extra_info (
+            option_id,
+            extra_info_options (
+              option_name
+            )
+          )
+        `)
+        .eq('user_id', user.id)
+        .eq('workout_date', format(selectedDate, 'yyyy-MM-dd'))
+        .maybeSingle()
+
+      if (error) {
+        console.error('Error checking for existing workout:', error)
+        return
+      }
+
+      if (data) {
+        setExistingWorkout(data)
+        setFormType("edit")
+        const type = data.reps.length === 3 ? "max-day" 
+                    : data.reps.length === 10 ? "sub-max-volume" 
+                    : "ladder-volume"
+        setWorkoutType(type)
+        setReps(data.reps)
+        const selectedInfo = data.workout_extra_info.map((info: { option_id: number }) => 
+          info.option_id.toString()
+        )
+        setSelectedExtraInfo(selectedInfo)
+      } else {
+        setExistingWorkout(null)
+        setFormType("add")
+        setWorkoutType("max-day")
+        setReps(Array(3).fill(0))
+        setSelectedExtraInfo([])
+      }
+    }
+
+    checkExistingWorkout()
+  }, [selectedDate, initialWorkout, supabase])
 
   // Fetch extra info options from Supabase
   useEffect(() => {
@@ -64,27 +141,6 @@ export function WorkoutForm({ date, formType, workout, onClose, onWorkoutChange 
     fetchExtraInfoOptions()
   }, [])
 
-  // Set initial values when editing
-  useEffect(() => {
-    if (workout) {
-      const type = workout.reps.length === 3 ? "max-day" 
-                  : workout.reps.length === 10 ? "sub-max-volume" 
-                  : "ladder-volume"
-      setWorkoutType(type)
-      setReps(workout.reps)
-      
-      // Set selected extra info from workout data
-      const selectedInfo = workout.workout_extra_info.map(info => 
-        info.option_id.toString()
-      )
-      setSelectedExtraInfo(selectedInfo)
-    } else {
-      setWorkoutType("max-day")
-      setReps(Array(3).fill(0))
-      setSelectedExtraInfo([])
-    }
-  }, [workout])
-
   const handleWorkoutTypeChange = (value: string) => {
     setWorkoutType(value)
     // Set appropriate number of reps based on workout type
@@ -103,11 +159,19 @@ export function WorkoutForm({ date, formType, workout, onClose, onWorkoutChange 
 
   const handleSubmit = async () => {
     try {
-      const workoutData = {
-        workout_date: format(date, "yyyy-MM-dd"),
-        reps,
-        user_id: (await supabase.auth.getUser()).data.user?.id
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        toast.error("You must be logged in to save a workout")
+        return
       }
+
+      const workoutData = {
+        workout_date: format(selectedDate, "yyyy-MM-dd"),
+        reps,
+        user_id: user.id
+      }
+
+      let workoutId: number | undefined
 
       if (formType === "add") {
         // Create new workout
@@ -117,40 +181,29 @@ export function WorkoutForm({ date, formType, workout, onClose, onWorkoutChange 
           .select()
 
         if (error) throw error
+        workoutId = data?.[0]?.workout_id
 
-        // Add workout type and extra info
-        if (data?.[0]?.workout_id) {
-          const extraInfoData = selectedExtraInfo.map(optionId => ({
-            workout_id: data[0].workout_id,
-            option_id: parseInt(optionId)
-          }))
-
-          const { error: extraInfoError } = await supabase
-            .from('workout_extra_info')
-            .insert(extraInfoData)
-
-          if (extraInfoError) throw extraInfoError
-        }
-
-        toast.success("Workout added successfully")
-      } else if (formType === "edit" && workout?.workout_id) {
+      } else if (formType === "edit" && existingWorkout?.workout_id) {
         // Update existing workout
         const { error: updateError } = await supabase
           .from('workouts')
           .update(workoutData)
-          .eq('workout_id', workout.workout_id)
+          .eq('workout_id', existingWorkout.workout_id)
 
         if (updateError) throw updateError
+        workoutId = existingWorkout.workout_id
 
         // Delete existing extra info
         await supabase
           .from('workout_extra_info')
           .delete()
-          .eq('workout_id', workout.workout_id)
+          .eq('workout_id', workoutId)
+      }
 
-        // Insert new extra info
+      // Add/update extra info if we have a workout ID
+      if (workoutId) {
         const extraInfoData = selectedExtraInfo.map(optionId => ({
-          workout_id: workout.workout_id,
+          workout_id: workoutId,
           option_id: parseInt(optionId)
         }))
 
@@ -159,10 +212,9 @@ export function WorkoutForm({ date, formType, workout, onClose, onWorkoutChange 
           .insert(extraInfoData)
 
         if (extraInfoError) throw extraInfoError
-
-        toast.success("Workout updated successfully")
       }
 
+      toast.success(formType === "add" ? "Workout added successfully" : "Workout updated successfully")
       onWorkoutChange()
       onClose()
     } catch (error) {
@@ -172,14 +224,14 @@ export function WorkoutForm({ date, formType, workout, onClose, onWorkoutChange 
   }
 
   const handleDelete = async () => {
-    if (!workout?.workout_id || formType !== "edit") return
+    if (!existingWorkout?.workout_id || formType !== "edit") return
 
     try {
       // Delete workout_extra_info first (due to foreign key constraint)
       const { error: extraInfoError } = await supabase
         .from('workout_extra_info')
         .delete()
-        .eq('workout_id', workout.workout_id)
+        .eq('workout_id', existingWorkout.workout_id)
 
       if (extraInfoError) throw extraInfoError
 
@@ -187,7 +239,7 @@ export function WorkoutForm({ date, formType, workout, onClose, onWorkoutChange 
       const { error: workoutError } = await supabase
         .from('workouts')
         .delete()
-        .eq('workout_id', workout.workout_id)
+        .eq('workout_id', existingWorkout.workout_id)
 
       if (workoutError) throw workoutError
 
@@ -211,8 +263,39 @@ export function WorkoutForm({ date, formType, workout, onClose, onWorkoutChange 
             <Label htmlFor="date" className="text-right">
               Date
             </Label>
-            <div className="col-span-3">{format(date, "MMMM d, yyyy")}</div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "col-span-3 justify-start text-left font-normal",
+                    !selectedDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {selectedDate ? format(selectedDate, "PPP") : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={(date) => date && setSelectedDate(date)}
+                  disabled={(date) => date > new Date()}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
           </div>
+
+          {existingWorkout && formType === "add" && (
+            <Alert>
+              <AlertDescription>
+                A workout already exists for this date. You can edit the existing workout instead.
+              </AlertDescription>
+            </Alert>
+          )}
+
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="workout-type" className="text-right">
               Type
@@ -266,7 +349,10 @@ export function WorkoutForm({ date, formType, workout, onClose, onWorkoutChange 
           <Button onClick={onClose} variant="outline">
             Cancel
           </Button>
-          <Button onClick={handleSubmit}>
+          <Button 
+            onClick={handleSubmit}
+            disabled={formType === "add" && existingWorkout !== null}
+          >
             {formType === "add" ? "Add Workout" : "Save Changes"}
           </Button>
         </div>

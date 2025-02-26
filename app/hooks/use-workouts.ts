@@ -100,10 +100,6 @@ export function useWorkouts() {
   }, [supabase])
 
   useEffect(() => {
-    fetchWorkouts()
-  }, [fetchWorkouts, version])
-
-  useEffect(() => {
     // Check authentication status immediately
     const checkAuth = async () => {
       const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -129,7 +125,11 @@ export function useWorkouts() {
         },
         (payload) => {
           console.log("Received real-time change:", payload)
-          setVersion(v => v + 1)
+          console.log("Triggering workout refetch by incrementing version")
+          setVersion(v => {
+            console.log("Current version:", v, "New version:", v + 1)
+            return v + 1
+          })
         }
       )
       .subscribe((status) => {
@@ -142,6 +142,11 @@ export function useWorkouts() {
       channel.unsubscribe()
     }
   }, [supabase])
+
+  useEffect(() => {
+    console.log("Fetching workouts due to version change:", version)
+    fetchWorkouts()
+  }, [fetchWorkouts, version])
 
   return { workouts, loading, error }
 } 

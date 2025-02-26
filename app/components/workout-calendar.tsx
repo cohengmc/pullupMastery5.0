@@ -254,8 +254,7 @@ export function WorkoutCalendar({ className }: WorkoutCalendarProps) {
               setFormType(null)
             }}
             onWorkoutChange={() => {
-              setSelectedDay(null)
-              setFormType(null)
+              window.location.reload();
             }}
           />
         )}
