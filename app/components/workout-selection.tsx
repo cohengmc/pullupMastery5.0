@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { cn } from "@/lib/utils"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 const workouts = [
   {
@@ -25,26 +26,30 @@ interface WorkoutSelectionProps {
 
 export function WorkoutSelection({ className }: WorkoutSelectionProps) {
   return (
-    <div className={cn("bg-primary/20 rounded-xl p-4 sm:p-6 transition-colors", className)}>
-      <h2 className="text-xl sm:text-2xl font-light text-muted-foreground mb-4">
-        Select Your Workout
-      </h2>
-      <div className="grid gap-3">
-        {workouts.map((workout) => (
-          <Link
-            key={workout.slug}
-            href={`/workout/${workout.slug}`}
-            className="block"
-          >
-            <div className="bg-muted/50 hover:bg-muted rounded-xl p-4 transition-colors">
-              <h3 className="text-xl font-light mb-1">{workout.name}</h3>
-              <p className="text-primary/80 text-sm">
-                {workout.description}
-              </p>
-            </div>
-          </Link>
-        ))}
-      </div>
-    </div>
+    <Card className={cn("w-full", className)}>
+      <CardHeader className="pb-2">
+        <CardTitle>
+          Select Your Workout
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid gap-3">
+          {workouts.map((workout) => (
+            <Link
+              key={workout.slug}
+              href={`/workout/${workout.slug}`}
+              className="block"
+            >
+              <div className="bg-primary/20 hover:bg-primary/40 rounded-xl p-4 transition-colors">
+                <h3 className="text-xl font-semibold mb-1">{workout.name}</h3>
+                <p className="text-primary/80 text-sm">
+                  {workout.description}
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   )
 } 

@@ -42,10 +42,10 @@ export default async function ProtectedPage() {
 
   return (
     <div>
-      <div className="min-h-screen bg-background text-foreground p-6 sm:p-8 md:p-12 lg:p-16 transition-colors">
+      <div className="min-h-screen bg-background text-foreground transition-colors">
         <div className="max-w-5xl mx-auto space-y-6">
           <div className="flex justify-between items-center">
-            <h1 className="text-3xl sm:text-4xl font-light tracking-wider">
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-wider">
               Pull Up Mastery
             </h1>
             <div className="flex items-center space-x-2">
@@ -57,7 +57,7 @@ export default async function ProtectedPage() {
           {/* Row 1: Workout Selection and Calendar */}
           <div className="grid lg:grid-cols-2 gap-6">
             {/* Column 1: Workout Selection */}
-            <WorkoutSelection className="border border-border" />
+            <WorkoutSelection className="bg-primary/20 rounded-xl p-4 sm:p-6 transition-colors" />
 
             {/* Column 2: Calendar */}
             <WorkoutCalendar className="bg-primary/20 rounded-xl p-4 sm:p-6 transition-colors" />

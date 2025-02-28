@@ -4,8 +4,8 @@ import HeaderAuth from "@/components/header-auth";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { hasEnvVars } from "@/utils/supabase/check-env-vars";
 import { Inter } from "next/font/google";
-import { ThemeProvider } from "next-themes";
-import Link from "next/link";
+import { ThemeProvider } from "@/components/theme-provider";
+import { NavLogo } from "@/components/nav-logo";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -15,18 +15,24 @@ const defaultUrl = process.env.VERCEL_URL
 export const metadata = {
   metadataBase: new URL(defaultUrl),
   title: "Pull Up Mastery",
-  description: "Track your pull up workouts and progress",
+  description: "Track and improve your pull-up journey",
 };
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="en" className={inter.className} suppressHydrationWarning>
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+        />
+      </head>
       <body className="bg-background text-foreground">
         <ThemeProvider
           attribute="class"
@@ -38,12 +44,7 @@ export default function RootLayout({
             <div className="flex-1 w-full flex flex-col gap-5 items-center">
               <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
                 <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
-                  <div className="flex gap-5 items-center font-semibold">
-                    <Link href={"/"}>Pull Up Mastery</Link>
-                    {/* <div className="flex items-center gap-2">
-                      <DeployButton />
-                    </div> */}
-                  </div>
+                  <NavLogo />
                   {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />}
                 </div>
               </nav>
