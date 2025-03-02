@@ -3,13 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { WorkoutProgressChart } from "./workout-progress-chart"
 import Link from "next/link"
-
-const placeholderData = [
-  { "date": "February 24, 2025", "reps": "7,5,4" },
-  { "date": "February 26, 2025", "reps": "3,3,3,3,3,3,2,2,2,1" },
-  { "date": "February 28, 2025", "reps": "3,3,2,2,2" },
-  // Add more data as needed from placeholderData.json
-]
+import placeholderData from "@/placeholderData.json"
 
 export function LandingHero() {
   return (
@@ -38,8 +32,8 @@ export function LandingHero() {
 
         {/* Example Chart */}
         <div className="relative">
-          <WorkoutProgressChart className="pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
+          <WorkoutProgressChart demoData={placeholderData} />
+          <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent pointer-events-none" />
         </div>
       </div>
 

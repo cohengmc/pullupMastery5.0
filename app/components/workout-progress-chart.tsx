@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { format, parseISO } from "date-fns"
+import { format, parseISO, parse } from "date-fns"
 import { Bar, BarChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
@@ -13,8 +13,25 @@ import { cn } from "@/lib/utils"
 
 type WorkoutType = "All" | "Max Day" | "Sub Max" | "Ladder"
 
+interface DemoWorkout {
+  date: string | Date
+  reps: string | number[]
+}
+
+interface DbWorkout {
+  workout_date: string
+  reps: number[]
+}
+
+type WorkoutData = DemoWorkout | DbWorkout
+
 const sumLadderSet = (reps: number) => {
   return Array.from({ length: reps }, (_, i) => reps - i).reduce((a, b) => a + b, 0)
+}
+
+const parseReps = (reps: string | number[]): number[] => {
+  if (Array.isArray(reps)) return reps
+  return reps.split(',').map(Number)
 }
 
 const getColorsForWorkout = (sets: number[], type: string) => {
@@ -27,43 +44,65 @@ const getColorsForWorkout = (sets: number[], type: string) => {
   return sets.map((rep) => colorMap.get(rep) || "#CCCCCC")
 }
 
-export function WorkoutProgressChart({ className }: { className?: string }) {
+const parseDateString = (dateStr: string | Date): Date => {
+  if (dateStr instanceof Date) return dateStr
+  
+  // If it contains commas, it's likely in "Month DD, YYYY" format
+  if (dateStr.includes(',')) {
+    return parse(dateStr, 'MMMM d, yyyy', new Date())
+  }
+  
+  // Otherwise, try ISO format
+  return parseISO(dateStr)
+}
+
+export function WorkoutProgressChart({ className, demoData }: { className?: string, demoData?: DemoWorkout[] }) {
   const [selectedType, setSelectedType] = useState<WorkoutType>("All")
-  const [showSets, setShowSets] = useState(true)
   const { workouts, loading, error } = useWorkouts()
 
   const chartData = useMemo(() => {
-    if (!workouts.length) return []
+    const dataToUse = (demoData || workouts) as WorkoutData[]
+    if (!dataToUse.length) return []
 
-    return workouts
+    return dataToUse
       .map((workout) => {
-        const sets = workout.reps
-        const type = sets.length === 3 ? "Max Day" : sets.length === 10 ? "Sub Max" : "Ladder"
+        try {
+          const sets = parseReps(workout.reps)
+          const type = sets.length === 3 ? "Max Day" : sets.length === 10 ? "Sub Max" : "Ladder"
 
-        if (selectedType !== "All" && type !== selectedType) return null
+          if (selectedType !== "All" && type !== selectedType) return null
 
-        const processedSets = type === "Ladder" ? sets.map(sumLadderSet) : sets
-        const total = processedSets.reduce((a, b) => a + b, 0)
-        const colors = getColorsForWorkout(sets, type)
+          const processedSets = type === "Ladder" ? sets.map(sumLadderSet) : sets
+          const total = processedSets.reduce((a: number, b: number): number => a + b, 0)
+          const colors = getColorsForWorkout(sets, type)
 
-        return {
-          date: format(parseISO(workout.workout_date), "MMM d"),
-          type,
-          total,
-          originalSets: sets,
-          colors,
-          ...(showSets &&
-            processedSets.reduce(
-              (acc, value, index) => {
-                acc[`set${index + 1}`] = value
-                return acc
-              },
-              {} as Record<string, number>,
-            )),
+          // Handle different date formats
+          const dateToFormat = 'workout_date' in workout 
+            ? parseISO(workout.workout_date)
+            : parseDateString(workout.date)
+
+          return {
+            date: format(dateToFormat, "MMM d"),
+            type,
+            total,
+            originalSets: sets,
+            colors,
+            ...(selectedType !== "All" &&
+              processedSets.reduce(
+                (acc: Record<string, number>, value: number, index: number) => {
+                  acc[`set${index + 1}`] = value
+                  return acc
+                },
+                {} as Record<string, number>,
+              )),
+          }
+        } catch (error) {
+          console.error('Error processing workout:', workout, error)
+          return null
         }
       })
       .filter((item): item is NonNullable<typeof item> => item !== null)
-  }, [workouts, selectedType, showSets])
+  }, [workouts, selectedType, demoData])
 
   const maxValue = useMemo(() => {
     if (!chartData.length) return 100
@@ -71,11 +110,11 @@ export function WorkoutProgressChart({ className }: { className?: string }) {
     return Math.ceil(max / 10) * 10 + 10
   }, [chartData])
 
-  if (loading) {
+  if (loading && !demoData) {
     return <Skeleton className="w-full h-[500px]" />
   }
 
-  if (error || !chartData.length) {
+  if ((error || !chartData.length) && !demoData) {
     return (
       <Card className={cn("w-full", className)}>
         <CardHeader>
@@ -108,10 +147,6 @@ export function WorkoutProgressChart({ className }: { className?: string }) {
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle>Workout Progress</CardTitle>
-          <div className="flex items-center space-x-2">
-            <Switch id="show-sets" checked={showSets} onCheckedChange={setShowSets} />
-            <Label htmlFor="show-sets">Show Sets</Label>
-          </div>
         </div>
         <div className="flex justify-center mt-4">
           <ToggleGroup
@@ -139,7 +174,7 @@ export function WorkoutProgressChart({ className }: { className?: string }) {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={chartData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+              margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
               barGap={2}
               barSize={18}
             >
@@ -148,7 +183,21 @@ export function WorkoutProgressChart({ className }: { className?: string }) {
               <YAxis domain={[0, maxValue]} tick={{ fill: "#9CA3AF", fontSize: 12 }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
-              {showSets ? (
+              {selectedType === "All" ? (
+                <Bar dataKey="total" fill="hsl(var(--primary))" name="Total Reps" />
+              ) : selectedType === "Max Day" ? (
+                // Max Day specific visualization with 3 sets
+                Array.from({ length: 3 }).map((_, i) => (
+                  <Bar
+                    key={`set${i + 1}`}
+                    dataKey={`set${i + 1}`}
+                    stackId="a"
+                    fill={["#FF6B6B", "#FFD93D", "#6BCB77"][i]}
+                    name={`Set ${i + 1}`}
+                  />
+                ))
+              ) : (
+                // Sub Max and Ladder visualization
                 Array.from({ length: 10 }).map((_, i) => (
                   <Bar
                     key={`set${i + 1}`}
@@ -166,8 +215,6 @@ export function WorkoutProgressChart({ className }: { className?: string }) {
                     ))}
                   </Bar>
                 ))
-              ) : (
-                <Bar dataKey="total" fill="rgb(34 211 238)" name="Total Reps" />
               )}
             </BarChart>
           </ResponsiveContainer>
