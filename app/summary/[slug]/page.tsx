@@ -9,6 +9,7 @@ import { Edit2 } from "lucide-react"
 import NumberWheel from "../../components/number-wheel"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import type { Route } from 'next'
 
 const workoutNames = {
   "max-day": "Max Day",
@@ -19,9 +20,8 @@ const workoutNames = {
 export default function SummaryPage({
   params,
 }: {
-  params: { slug: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
-}) {
+  params: { slug: string }
+} & { [key: string]: any }) {
   const [reps, setReps] = useState<(number | "X")[]>([])
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
   const [wheelValue, setWheelValue] = useState<number>(0)
