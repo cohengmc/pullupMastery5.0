@@ -203,7 +203,7 @@ export function WorkoutProgressChart({ className, demoData }: { className?: stri
                     key={`set${i + 1}`}
                     dataKey={`set${i + 1}`}
                     stackId="a"
-                    fill="rgba(0,0,0,0)"
+                    fill={["#FF6B6B", "#FFD93D", "#6BCB77"][i]}
                     name={`Set ${i + 1}`}
                   >
                     {chartData.map((entry, index) => (

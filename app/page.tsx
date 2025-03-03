@@ -23,8 +23,8 @@ export default async function Home() {
       {/* Additional Sections */}
       <div className="bg-background text-foreground p-2 sm:p-4 md:p-8 lg:p-12 transition-colors">
         <div className="max-w-5xl mx-auto space-y-12">
-          <div id="how-it-works" className="scroll-mt-16">
-            <h2 className="text-3xl font-semibold mb-8">How It Works</h2>
+          <div id="get-started" className="scroll-mt-16">
+            <h2 className="text-3xl font-semibold mb-8">Get Started</h2>
             <WorkoutSelection className="bg-card/30" />
           </div>
         </div>

@@ -29,10 +29,15 @@ export function useWorkouts() {
     try {
       console.log("Fetching workouts...")
       const { data: { user } } = await supabase.auth.getUser()
+      
+      // If no user is authenticated, return empty array without error
       if (!user) {
-        console.error("No user found")
-        throw new Error("User not authenticated")
+        console.log("No authenticated user, returning empty workouts array")
+        setWorkouts([])
+        setLoading(false)
+        return
       }
+      
       console.log("User ID:", user.id)
 
       const { data, error } = await supabase
@@ -111,35 +116,44 @@ export function useWorkouts() {
     }
     checkAuth()
 
-    // Set up real-time subscriptions
-    console.log("Setting up real-time subscription...")
-    
-    const channel = supabase
-      .channel('public:workouts')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'workouts'
-        },
-        (payload) => {
-          console.log("Received real-time change:", payload)
-          console.log("Triggering workout refetch by incrementing version")
-          setVersion(v => {
-            console.log("Current version:", v, "New version:", v + 1)
-            return v + 1
-          })
-        }
-      )
-      .subscribe((status) => {
-        console.log("Subscription status:", status)
-      })
+    // Set up real-time subscriptions only if user is authenticated
+    const setupRealtimeSubscription = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return // Skip subscription if no user
 
-    // Cleanup subscription on unmount
+      console.log("Setting up real-time subscription...")
+      
+      const channel = supabase
+        .channel('public:workouts')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'workouts'
+          },
+          (payload) => {
+            console.log("Received real-time change:", payload)
+            console.log("Triggering workout refetch by incrementing version")
+            setVersion(v => {
+              console.log("Current version:", v, "New version:", v + 1)
+              return v + 1
+            })
+          }
+        )
+        .subscribe((status) => {
+          console.log("Subscription status:", status)
+        })
+
+      return () => {
+        console.log("Cleaning up subscription")
+        channel.unsubscribe()
+      }
+    }
+
+    const cleanup = setupRealtimeSubscription()
     return () => {
-      console.log("Cleaning up subscription")
-      channel.unsubscribe()
+      cleanup.then(cleanupFn => cleanupFn?.())
     }
   }, [supabase])
 
