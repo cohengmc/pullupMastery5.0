@@ -16,7 +16,12 @@ const workoutNames = {
   "ladder-volume": "Ladder Volume",
 }
 
-export default function SummaryPage({ params }: { params: { slug: string } }) {
+export default function SummaryPage({
+  params,
+}: {
+  params: { slug: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) {
   const [reps, setReps] = useState<(number | "X")[]>([])
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
   const [wheelValue, setWheelValue] = useState<number>(0)
@@ -80,15 +85,15 @@ export default function SummaryPage({ params }: { params: { slug: string } }) {
   // Calculate total reps based on workout type
   const totalReps =
     params.slug === "ladder-volume"
-      ? reps.reduce((sum, rep) => {
+      ? reps.reduce((sum: number, rep) => {
           if (rep === "X") return sum
           const ladderSum = Array.from({ length: rep as number }, (_, i) => (rep as number) - i).reduce(
-            (a, b) => a + b,
+            (a: number, b: number) => a + b,
             0,
           )
           return sum + ladderSum
         }, 0)
-      : reps.reduce((sum, rep) => sum + (rep === "X" ? 0 : (rep as number)), 0)
+      : reps.reduce((sum: number, rep) => sum + (rep === "X" ? 0 : (rep as number)), 0)
 
   // Filter out X values for the chart
   const chartData = reps.map((rep) => (rep === "X" ? 0 : (rep as number)))
@@ -110,7 +115,7 @@ export default function SummaryPage({ params }: { params: { slug: string } }) {
             <h2 className="text-xl font-light mb-2">Current Workout</h2>
             {reps.map((rep, index) => (
               <div key={index} className="flex items-center space-x-3">
-                <span className="text-base sm:text-lg text-muted-foreground font-light">Set {index + 1}:</span>
+                <span className="text-base sm:text-lg text-muted-foreground font-light">Set {`${index + 1}`}:</span>
                 <span className="text-base sm:text-lg text-primary font-light">
                   {editingIndex === index ? (
                     <div className="flex items-center gap-4">
