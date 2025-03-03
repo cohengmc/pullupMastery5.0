@@ -28,11 +28,11 @@ export function LandingHero() {
       <div className="w-full max-w-7xl grid lg:grid-cols-2 gap-12 items-center px-4">
         <div className="space-y-8">
           <h1 className="text-6xl font-extrabold leading-tight tracking-tight">
-            <span className="font-light">Visualize</span>{" "}
-            <span className="font-normal">Your</span>{" "}
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 text-transparent bg-clip-text">Workouts</span>{" "}
-            <span className="text-muted-foreground font-thin">&</span>{" "}
-            <span className="bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-600 text-transparent bg-clip-text">Progress</span>
+            <span className="">Visualize</span>{" "}
+            <span className="">Your</span>{" "}
+            <span className="bg-gradient-to-r from-primary to-muted-foreground text-transparent bg-clip-text block">Workouts</span>{" "}
+            <span className="font-normal">&</span>{" "}
+            <span className="font-normal">Track Progress</span>
           </h1>
           <p className="text-xl text-muted-foreground font-light">
             Track, analyze, and improve your pull-up journey with beautiful visualizations and structured workouts.
