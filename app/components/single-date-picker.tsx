@@ -24,7 +24,12 @@ export function SingleDatePicker({ date, onChange }: SingleDatePickerProps) {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
-        <Calendar mode="single" selected={date} onSelect={onChange} initialFocus />
+        <Calendar 
+          mode="single" 
+          selected={date || undefined}
+          onSelect={(date: Date | undefined) => onChange(date || null)}
+          initialFocus 
+        />
       </PopoverContent>
     </Popover>
   )
