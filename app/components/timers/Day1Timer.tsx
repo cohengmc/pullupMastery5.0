@@ -116,7 +116,7 @@ export default function Day1Timer({ onWorkoutComplete }: Day1TimerProps) {
                 <SetProgress
                   totalSets={3}
                   currentSet={currentSet}
-                  completedSets={Array(completedSetCount).fill(0)}
+                  completedSets={completedReps}
                   currentValue={isResting && showNumberWheel ? wheelValue : undefined}
                 />
               </div>

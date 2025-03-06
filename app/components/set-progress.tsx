@@ -4,15 +4,16 @@ import { cn } from "@/lib/utils"
 interface SetProgressProps {
   totalSets: number
   currentSet: number
-  completedSets: number[]
+  completedSets: (number | "X")[]
   currentValue?: number | 'X'
 }
 
 export function SetProgress({ totalSets, currentSet, completedSets, currentValue }: SetProgressProps) {
+  const numericCompletedSets = completedSets.filter((rep): rep is number => typeof rep === "number")
   return (
     <div className="flex gap-2 justify-center">
       {Array.from({ length: totalSets }).map((_, index) => {
-        const isComplete = index < completedSets.length
+        const isComplete = index < numericCompletedSets.length
         const isCurrent = !isComplete && index === currentSet - 1
         
         return (
