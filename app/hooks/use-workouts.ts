@@ -25,20 +25,20 @@ export function useWorkouts() {
   const [version, setVersion] = useState(0)
   const supabase = createClient()
 
+  const mutate = useCallback(() => {
+    setVersion(v => v + 1)
+  }, [])
+
   const fetchWorkouts = useCallback(async () => {
     try {
-      console.log("Fetching workouts...")
       const { data: { user } } = await supabase.auth.getUser()
       
       // If no user is authenticated, return empty array without error
       if (!user) {
-        console.log("No authenticated user, returning empty workouts array")
         setWorkouts([])
         setLoading(false)
         return
       }
-      
-      console.log("User ID:", user.id)
 
       const { data, error } = await supabase
         .from("workouts")
@@ -55,14 +55,11 @@ export function useWorkouts() {
         .order("workout_date", { ascending: true })
 
       if (error) {
-        console.error("Supabase error:", error)
+        console.error("Error fetching workouts:", error)
         throw error
       }
 
-      console.log("Raw workout data:", data)
-
       if (!data || data.length === 0) {
-        console.log("No workout data found")
         setWorkouts([])
         return
       }
@@ -76,11 +73,9 @@ export function useWorkouts() {
             : typeof workout.reps === 'string'
               ? workout.reps.split(",").map((r: string) => parseInt(r.trim(), 10))
               : []
-
-          console.log(`Workout ${workout.workout_id} reps:`, repsArray)
           
           if (repsArray.some(isNaN)) {
-            console.error(`Invalid reps data for workout ${workout.workout_id}:`, workout.reps)
+            console.error(`Invalid reps data for workout ${workout.workout_id}`)
             return null
           }
 
@@ -94,7 +89,6 @@ export function useWorkouts() {
         }
       }).filter((workout): workout is Workout => workout !== null)
 
-      console.log("Processed workout data:", processedData)
       setWorkouts(processedData)
     } catch (err) {
       console.error("Error in fetchWorkouts:", err)
@@ -112,7 +106,6 @@ export function useWorkouts() {
         console.error("Authentication error:", authError)
         return
       }
-      console.log("Authentication check - User:", user ? "Authenticated as " + user.id : "Not authenticated")
     }
     checkAuth()
 
@@ -120,8 +113,6 @@ export function useWorkouts() {
     const setupRealtimeSubscription = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return // Skip subscription if no user
-
-      console.log("Setting up real-time subscription...")
       
       const channel = supabase
         .channel('public:workouts')
@@ -132,21 +123,13 @@ export function useWorkouts() {
             schema: 'public',
             table: 'workouts'
           },
-          (payload) => {
-            console.log("Received real-time change:", payload)
-            console.log("Triggering workout refetch by incrementing version")
-            setVersion(v => {
-              console.log("Current version:", v, "New version:", v + 1)
-              return v + 1
-            })
+          () => {
+            setVersion(v => v + 1)
           }
         )
-        .subscribe((status) => {
-          console.log("Subscription status:", status)
-        })
+        .subscribe()
 
       return () => {
-        console.log("Cleaning up subscription")
         channel.unsubscribe()
       }
     }
@@ -158,9 +141,8 @@ export function useWorkouts() {
   }, [supabase])
 
   useEffect(() => {
-    console.log("Fetching workouts due to version change:", version)
     fetchWorkouts()
   }, [fetchWorkouts, version])
 
-  return { workouts, loading, error }
+  return { workouts, loading, error, mutate }
 } 

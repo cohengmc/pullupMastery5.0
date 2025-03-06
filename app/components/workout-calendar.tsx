@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useRef, useEffect } from "react"
+import { useState, useCallback, useRef, useEffect, Fragment } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import {
@@ -202,7 +202,7 @@ export function WorkoutCalendar({ className }: WorkoutCalendarProps) {
               </div>
             ))}
             {calendarWeeks.map((week, weekIndex) => (
-              <>
+              <Fragment key={`week-${weekIndex}`}>
                 {week.map((day, dayIndex) => {
                   const hasWorkout = workoutDates.some((workout) => isSameDay(workout.date, day))
                   const isCurrentMonth = isSameMonth(day, currentDate)
@@ -226,7 +226,7 @@ export function WorkoutCalendar({ className }: WorkoutCalendarProps) {
                 <div key={`progress-${weekIndex}`} className="aspect-square flex items-center justify-center">
                   {getProgressSymbol(getWorkoutsInWeek(week))}
                 </div>
-              </>
+              </Fragment>
             ))}
           </div>
         </CardContent>
