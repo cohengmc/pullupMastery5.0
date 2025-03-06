@@ -11,6 +11,7 @@ import { createClient } from "@/utils/supabase/client"
 import { useWorkouts } from "@/app/hooks/use-workouts"
 import { toast } from "sonner"
 import { AlertCircle } from "lucide-react"
+import { useParams } from "next/navigation"
 
 const workoutNames = {
   "max-day": "Max Day",
@@ -19,12 +20,12 @@ const workoutNames = {
 }
 
 type PageParams = {
-  params: { slug: string }
   searchParams: { [key: string]: string | string[] | undefined }
 }
 
-export default function SummaryPage({ params, searchParams }: PageParams) {
-  const { slug } = params
+export default function SummaryPage({ searchParams }: PageParams) {
+  const params = useParams()
+  const slug = params?.slug as string
   const [reps, setReps] = useState<(number | "X")[]>([])
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
   const [wheelValue, setWheelValue] = useState<number>(0)
