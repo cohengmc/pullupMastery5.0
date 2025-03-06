@@ -185,11 +185,19 @@ export function WorkoutCalendar({ className }: WorkoutCalendarProps) {
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle>Monthly View</CardTitle>
           <div className="flex items-center space-x-2">
-            <button onClick={prevMonth} className="p-1 rounded-full hover:bg-accent">
+            <button 
+              onClick={prevMonth} 
+              className="p-1 rounded-full hover:bg-accent"
+              title="View previous month"
+            >
               <ChevronLeft className="w-6 h-6" />
             </button>
             <span className="text-lg font-semibold">{format(currentDate, "MMMM yyyy")}</span>
-            <button onClick={nextMonth} className="p-1 rounded-full hover:bg-accent">
+            <button 
+              onClick={nextMonth} 
+              className="p-1 rounded-full hover:bg-accent"
+              title="View next month"
+            >
               <ChevronRight className="w-6 h-6" />
             </button>
           </div>

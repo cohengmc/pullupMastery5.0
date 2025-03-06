@@ -64,6 +64,7 @@ export function WorkoutHistory({ className }: { className?: string }) {
                       size="icon"
                       className="h-8 w-8 text-primary hover:text-primary/70 hover:bg-primary/10"
                       onClick={() => handleEditClick(workout)}
+                      title="Edit Workout"
                     >
                       <Edit2 className="h-4 w-4" />
                     </Button>
@@ -74,7 +75,11 @@ export function WorkoutHistory({ className }: { className?: string }) {
           </TableBody>
         </Table>
         <div className="flex justify-between items-center mt-4">
-          <Button onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))} disabled={currentPage === 0}>
+          <Button 
+            onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))} 
+            disabled={currentPage === 0}
+            title="View previous page of workout history"
+          >
             <ChevronLeft className="mr-2 h-4 w-4" /> Previous
           </Button>
           <span>
@@ -83,6 +88,7 @@ export function WorkoutHistory({ className }: { className?: string }) {
           <Button
             onClick={() => setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))}
             disabled={currentPage === totalPages - 1}
+            title="View next page of workout history"
           >
             Next <ChevronRight className="ml-2 h-4 w-4" />
           </Button>

@@ -154,16 +154,16 @@ export function WorkoutProgressChart({ className, demoData }: { className?: stri
             value={selectedType}
             onValueChange={(value) => value && setSelectedType(value as WorkoutType)}
           >
-            <ToggleGroupItem value="All" aria-label="Show all workouts">
+            <ToggleGroupItem value="All" title="Show all workouts">
               All
             </ToggleGroupItem>
-            <ToggleGroupItem value="Max Day" aria-label="Show max day workouts">
+            <ToggleGroupItem value="Max Day" title="Show max day workouts">
               Max Day
             </ToggleGroupItem>
-            <ToggleGroupItem value="Sub Max" aria-label="Show sub max workouts">
+            <ToggleGroupItem value="Sub Max" title="Show sub max workouts">
               Sub Max
             </ToggleGroupItem>
-            <ToggleGroupItem value="Ladder" aria-label="Show ladder workouts">
+            <ToggleGroupItem value="Ladder" title="Show ladder workouts">
               Ladder
             </ToggleGroupItem>
           </ToggleGroup>

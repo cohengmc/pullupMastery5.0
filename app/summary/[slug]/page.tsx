@@ -19,12 +19,12 @@ const workoutNames = {
 }
 
 type PageParams = {
-  params: Promise<{ slug: string }>
-  searchParams?: { [key: string]: string | string[] | undefined }
+  params: { slug: string }
+  searchParams: { [key: string]: string | string[] | undefined }
 }
 
 export default function SummaryPage({ params, searchParams }: PageParams) {
-  const { slug } = use(params)
+  const { slug } = params
   const [reps, setReps] = useState<(number | "X")[]>([])
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
   const [wheelValue, setWheelValue] = useState<number>(0)
@@ -279,6 +279,7 @@ export default function SummaryPage({ params, searchParams }: PageParams) {
                           setWheelValue(initialValue)
                           setEditingIndex(index)
                         }}
+                        title="Edit Reps"
                       >
                         <Edit2 className="h-4 w-4" />
                       </Button>

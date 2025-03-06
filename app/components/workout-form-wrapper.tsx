@@ -20,7 +20,7 @@ export function WorkoutFormWrapper() {
 
   return (
     <>
-      <Button onClick={() => setIsOpen(true)} size="icon" variant="ghost">
+      <Button onClick={() => setIsOpen(true)} size="icon" variant="ghost" title="Add Workout">
         <PlusIcon className="h-5 w-5" />
       </Button>
       {isOpen && (

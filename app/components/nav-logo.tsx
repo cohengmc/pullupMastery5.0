@@ -33,6 +33,7 @@ export function NavLogo() {
       href="/"
       className="flex items-center gap-4 cursor-pointer" 
       onMouseEnter={handleHover}
+      title="Go to Dashboard"
     >
       <Image
         src={logoSrc}

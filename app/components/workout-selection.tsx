@@ -64,6 +64,7 @@ export function WorkoutSelection({ className }: WorkoutSelectionProps) {
               href={`/workout/${workout.slug}`}
               className="block"
               onClick={(e) => handleWorkoutClick(e, workout.slug)}
+              title={`Begin ${workout.name} Workout`}
             >
               <div className="bg-primary/20 hover:bg-primary/40 rounded-xl p-4 transition-colors">
                 <h3 className="text-xl font-semibold mb-1">{workout.name}</h3>
