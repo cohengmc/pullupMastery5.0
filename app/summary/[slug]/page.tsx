@@ -11,7 +11,7 @@ import { createClient } from "@/utils/supabase/client"
 import { useWorkouts } from "@/app/hooks/use-workouts"
 import { toast } from "sonner"
 import { AlertCircle } from "lucide-react"
-import { useParams } from "next/navigation"
+import { useParams, useSearchParams } from "next/navigation"
 
 const workoutNames = {
   "max-day": "Max Day",
@@ -19,12 +19,9 @@ const workoutNames = {
   "ladder-volume": "Ladder Volume",
 }
 
-type PageParams = {
-  searchParams: { [key: string]: string | string[] | undefined }
-}
-
-export default function SummaryPage({ searchParams }: PageParams) {
+export default function SummaryPage() {
   const params = useParams()
+  const searchParams = useSearchParams()
   const slug = params?.slug as string
   const [reps, setReps] = useState<(number | "X")[]>([])
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
