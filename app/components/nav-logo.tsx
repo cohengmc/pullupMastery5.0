@@ -41,6 +41,8 @@ export function NavLogo() {
         width={32}
         height={32}
         className="object-contain"
+        unoptimized={logoSrc.endsWith('.gif')}
+        priority
       />
       <span className="font-semibold">Pull Up Mastery</span>
     </Link>
