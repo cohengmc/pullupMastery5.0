@@ -39,7 +39,7 @@ export function LandingHero() {
           </p>
           <div className="flex gap-4">
             <Button variant="outline" size="lg" asChild>
-              <Link href="#how-it-works">How does it work?</Link>
+              <Link href="/sign-up">Create an account</Link>
             </Button>
             <Button size="lg" asChild>
               <Link href="#get-started">Start a workout</Link>

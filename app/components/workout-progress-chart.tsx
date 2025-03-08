@@ -34,11 +34,51 @@ const parseReps = (reps: string | number[]): number[] => {
   return reps.split(',').map(Number)
 }
 
-const getColorsForWorkout = (sets: number[], type: string) => {
-  const colors = ["#FF6B6B", "#FFD93D", "#6BCB77", "#4D96FF", "#9B59B6"]
+const getColorsForWorkout = (sets: number[], type: string, allWorkouts?: WorkoutData[]) => {
   if (type === "Max Day") {
-    return colors.slice(0, 3) // Use the first three colors for Max Day
+    return ["#FF6B6B", "#FFD93D", "#6BCB77"] // Keep existing colors for Max Day
   }
+
+  if (type === "Sub Max" && allWorkouts) {
+    // Get all rep values from all Sub Max workouts
+    const allReps = allWorkouts
+      .filter(workout => {
+        const sets = parseReps(workout.reps)
+        return sets.length === 10 // Sub Max workouts have 10 sets
+      })
+      .flatMap(workout => parseReps(workout.reps))
+
+    const minReps = Math.min(...allReps)
+    const maxReps = Math.max(...allReps)
+    const range = maxReps - minReps
+
+    // Create a color map for each unique rep count
+    const colorMap = new Map<number, string>()
+    
+    // Get unique rep values and sort them
+    const uniqueReps = Array.from(new Set(allReps)).sort((a, b) => a - b)
+    
+    // Create colors interpolating between primary and foreground based on unique rep counts
+    const colors = Array.from({ length: uniqueReps.length }, (_, i) => {
+      const percentage = i / (uniqueReps.length - 1)
+      // Mix between primary (end) and foreground (start) colors
+      // Higher percentage = more primary = darker
+      return `color-mix(in hsl, hsl(var(--foreground)) ${percentage * 100}%, hsl(var(--primary)))`
+    })
+    
+    // Map rep counts to colors (higher reps get darker colors)
+    uniqueReps.forEach((rep, index) => {
+      // Reverse the color index mapping
+      const colorIndex = uniqueReps.length - 1 - index
+      colorMap.set(rep, colors[colorIndex])
+    })
+
+    // Return colors for each set based on its rep count
+    return sets.map(rep => colorMap.get(rep) || colors[0])
+  }
+
+  // Default colors for other types
+  const colors = ["#FF6B6B", "#FFD93D", "#6BCB77", "#4D96FF", "#9B59B6"]
   const uniqueReps = Array.from(new Set(sets)).sort((a, b) => b - a)
   const colorMap = new Map(uniqueReps.map((rep, index) => [rep, colors[index % colors.length]]))
   return sets.map((rep) => colorMap.get(rep) || "#CCCCCC")
@@ -74,7 +114,7 @@ export function WorkoutProgressChart({ className, demoData }: { className?: stri
 
           const processedSets = type === "Ladder" ? sets.map(sumLadderSet) : sets
           const total = processedSets.reduce((a: number, b: number): number => a + b, 0)
-          const colors = getColorsForWorkout(sets, type)
+          const colors = getColorsForWorkout(sets, type, dataToUse)
 
           // Handle different date formats
           const dateToFormat = 'workout_date' in workout 
