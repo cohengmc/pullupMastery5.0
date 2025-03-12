@@ -6,6 +6,7 @@ import { SetProgress } from "../set-progress";
 import { cn } from "@/lib/utils";
 import { useState, useEffect, useCallback } from "react";
 import NumberWheel from "../number-wheel";
+import { HomeButton } from "../home-button";
 
 interface Day1TimerProps {
   onWorkoutComplete: (completedSets: (number | "X")[]) => void;
@@ -116,90 +117,98 @@ export default function Day1Timer({ onWorkoutComplete }: Day1TimerProps) {
   return (
     <div
       className={cn(
-        "w-full h-screen bg-background text-foreground flex items-center justify-center select-none"
+        "w-full h-screen bg-background text-foreground flex flex-col overflow-hidden select-none p-6"
       )}
     >
-      <div className="w-full">
-        <div className="bg-gray-900/50 rounded-3xl p-6">
-          <div className="flex items-center justify-between h-screen">
-            <div className="flex-1 mr-8">
-              <div className="flex justify-start items-center gap-1 text-white text-sm mb-4">
-                <div>Set {currentSet} of 3</div>
-                <SetProgress
-                  totalSets={3}
-                  currentSet={currentSet}
-                  completedSets={completedReps}
-                  currentValue={
-                    isResting && showNumberWheel ? wheelValue : undefined
-                  }
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex-col items-center justify-between">
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-col text-white mr-8">
-                      {isResting ? (
-                        <div className="text-6xl font-light tracking-wider text-primary">
-                          Rest
-                        </div>
-                      ) : (
-                        <div className="text-6xl font-light tracking-wider text-primary">
-                          <div>Max</div>
-                          <div>Reps</div>
-                        </div>
+      {/* Header Section */}
+      <div className="flex-none">
+        <div className="flex justify-start gap-2 items-end text-white text-sm mb-4">
+          <div className="text-xl sm:text-1xl md:text-3xl font-light tracking-wider mb-2 text-white">
+            Set {currentSet}
+          </div>
+          <SetProgress
+            totalSets={3}
+            currentSet={currentSet}
+            completedSets={completedReps}
+            currentValue={isResting && showNumberWheel ? wheelValue : undefined}
+          />
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex items-center justify-center">
+        <div className="w-full">
+          <div className="bg-gray-900/50 rounded-3xl">
+            <div className="flex items-center justify-between">
+              <div className="flex-1 mr-8">
+                <div className="flex items-center justify-between">
+                  <div className="flex-col items-center justify-between">
+                    <div className="flex items-center justify-between">
+                      <div className="flex flex-col text-white">
+                        {isResting ? (
+                          <div className="text-6xl font-light tracking-wider text-primary">
+                            Rest
+                          </div>
+                        ) : (
+                          <div className="text-6xl font-light tracking-wider text-primary">
+                            <div>Max</div>
+                            <div>Reps</div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="mt-8 flex justify-start gap-1 text-white text-sm mb-4">
+                      <div>
+                        {isResting ? "Next: Max Reps" : "Next: 5 Minute Rest"}
+                      </div>
+                    </div>
+                    <div className="mt-8 flex space-x-4">
+                      {isActive && (
+                        <button
+                          onClick={handleFastForward}
+                          className="w-12 h-12 bg-red-500/30 text-red-400 rounded-full text-xs font-medium hover:bg-red-500/40 transition-colors ml-2"
+                          aria-label="Fast Forward"
+                        >
+                          FF
+                        </button>
                       )}
                     </div>
                   </div>
-                  <div className="mt-8 flex justify-start gap-1 text-white text-sm mb-4">
-                    <div>
-                      {isResting ? "Next: Max Reps" : "Next: 5 Minute Rest"}
-                    </div>
-                  </div>
-                  <div className="mt-8 flex space-x-4">
-                    {isActive && (
+                  <div>
+                    {!isResting && (
                       <button
-                        onClick={handleFastForward}
-                        className="w-12 h-12 bg-red-500/30 text-red-400 rounded-full text-xs font-medium hover:bg-red-500/40 transition-colors ml-2"
-                        aria-label="Fast Forward"
+                        onClick={handleSetComplete}
+                        className="w-48 bg-primary/30 text-primary rounded-full py-3 text-base font-medium hover:bg-primary/40 transition-colors"
                       >
-                        FF
+                        Set Complete
                       </button>
+                    )}
+                    {isResting && showNumberWheel && (
+                      <NumberWheel
+                        min={wheelConfig.min}
+                        max={wheelConfig.max}
+                        value={wheelValue}
+                        onChange={(value) => setWheelValue(value === null ? "X" : value)}
+                        completedReps={completedReps}
+                      />
                     )}
                   </div>
                 </div>
-                <div>
-                  {!isResting && (
-                    <button
-                      onClick={handleSetComplete}
-                      className="w-48 bg-primary/30 text-primary rounded-full py-3 text-base font-medium hover:bg-primary/40 transition-colors"
-                    >
-                      Set Complete
-                    </button>
-                  )}
-                  {isResting && showNumberWheel && (
-                    <NumberWheel
-                      min={wheelConfig.min}
-                      max={wheelConfig.max}
-                      value={wheelValue}
-                      onChange={(value) =>
-                        setWheelValue(value === null ? "X" : value)
-                      }
-                      completedReps={completedReps}
-                    />
-                  )}
-                </div>
               </div>
-            </div>
 
-            <div className="relative w-60 h-60">
-              <ProgressCircle
-                progress={isActive ? progress : 0}
-                seconds={isActive ? formatTime(timeLeft) : null}
-              />
+              <div className="relative w-60 h-60">
+                <ProgressCircle
+                  progress={isActive ? progress : 0}
+                  seconds={isActive ? formatTime(timeLeft) : null}
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Home Button */}
+      <HomeButton />
     </div>
   );
 }
