@@ -173,7 +173,7 @@ export default function Day2Timer({ onWorkoutComplete }: Day2TimerProps) {
                     onChange={(value) =>
                       setWheelValue(value === null ? "X" : value)
                     }
-                    isFirstSet={completedReps.length === 0}
+                    completedReps={completedReps}
                   />
                 )}
                 <div className="relative w-40 h-40 mb-4">

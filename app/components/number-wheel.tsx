@@ -8,7 +8,7 @@ interface NumberWheelProps {
   max: number
   value: number | 'X'
   onChange?: (value: number | null) => void
-  isFirstSet: boolean
+  completedReps: (number | 'X')[]
 }
 
 export default function NumberWheel({ 
@@ -16,16 +16,18 @@ export default function NumberWheel({
   max, 
   value,
   onChange,
-  isFirstSet
+  completedReps
 }: NumberWheelProps) {
   const wheelRef = useRef<HTMLDivElement>(null)
   const isDraggingRef = useRef(false)
   const lastYRef = useRef(0)
 
+  const shouldShowXFirst = completedReps.length === 0 || !completedReps.some(rep => typeof rep === 'number')
+
   const getDisplayNumbers = useCallback(() => {
     const numbers = Array.from({length: max - min + 1}, (_, i) => String(min + i).padStart(2, '0'))
-    return isFirstSet ? ['X', ...numbers] : [...numbers, 'X']
-  }, [min, max, isFirstSet])
+    return shouldShowXFirst ? ['X', ...numbers] : [...numbers, 'X']
+  }, [min, max, shouldShowXFirst])
 
   const updateValue = useCallback((delta: number) => {
     const numbers = getDisplayNumbers()

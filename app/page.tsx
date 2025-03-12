@@ -1,30 +1,11 @@
-import { createClient } from "@/utils/supabase/server"
-import { LandingHero } from "@/components/landing-hero"
 import { WorkoutSelection } from "@/components/workout-selection"
-import { redirect } from "next/navigation"
 
-export default async function Home() {
-  const supabase = await createClient()
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  // If user is logged in, redirect to protected page
-  if (user) {
-    return redirect("/protected")
-  }
-
+export default function Home() {
   return (
     <>
-      {/* Hero Section */}
-      <LandingHero />
-
-      {/* Additional Sections */}
-      <div className="bg-background text-foreground p-2 sm:p-4 md:p-8 lg:p-12 transition-colors">
-        <div className="max-w-5xl mx-auto space-y-12">
-          <div id="get-started" className="scroll-mt-16">
-            <h2 className="text-3xl font-semibold mb-8">Get Started</h2>
+      <div className="bg-background text-foreground p-0 transition-colors h-full w-full flex flex-col">
+        <div className="flex-1 w-full flex items-center justify-center">
+          <div id="get-started" className="w-full">
             <WorkoutSelection className="bg-card/30" />
           </div>
         </div>
