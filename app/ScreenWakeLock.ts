@@ -7,11 +7,11 @@ interface WakeLockSentinel {
   release: () => Promise<void>;
 }
 
-interface NavigatorWithWakeLock extends Navigator {
+type NavigatorWithWakeLock = Navigator & {
   wakeLock?: {
     request: (type: 'screen') => Promise<WakeLockSentinel>;
   };
-}
+};
 
 // Custom hook for managing screen wake lock
 export const useWakeLock = () => {
