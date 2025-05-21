@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Home } from "lucide-react";
+import { CircleHelp, Contact, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   AlertDialog,
@@ -10,8 +10,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import ContactForm from "./contact-form";
 
-export function HomeButton() {
+export function EmailButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
@@ -19,14 +20,14 @@ export function HomeButton() {
   return (
     <>
       <button
-        className={`absolute right-3 bottom-3 center p-3 rounded-full transition-colors ${
+        className={`absolute left-3 bottom-3 center p-3 rounded-full transition-colors ${
           isHovered ? "bg-destructive/30" : "bg-primary/30"
         }`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onClick={() => setIsOpen(true)}
       >
-        <Home
+        <CircleHelp
           className={`w-6 h-6 ${
             isHovered ? "text-destructive" : "text-primary"
           }`}
@@ -34,28 +35,19 @@ export function HomeButton() {
       </button>
 
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-        <AlertDialogContent className="max-w-[300px] p-4 gap-2">
-          <AlertDialogHeader className="space-y-1 flex items-center">
+        <AlertDialogContent className="max-w-[500px] w-[90vw] p-4 gap-2">
+          <AlertDialogHeader className="space-y-1 flex items-center justify-between">
             <AlertDialogTitle className="text-base">
-              End workout?
+              Contact Us / Report Issue
             </AlertDialogTitle>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="rounded-full p-1 hover:bg-muted transition-colors"
+            >
+              <X className="h-4 w-4" />
+            </button>
           </AlertDialogHeader>
-          <AlertDialogFooter className="flex-row gap-2">
-            <AlertDialogAction
-              className="h-8 px-3 text-sm bg-primary/30 text-primary hover:bg-primary/40 flex-1"
-              onClick={() => {}} 
-            >
-              Keep Going
-            </AlertDialogAction>
-            <AlertDialogAction
-              className="h-8 px-3 text-sm bg-destructive/30 text-destructive hover:bg-destructive/40 flex-1"
-              onClick={() => {
-                router.push("/");
-              }}
-            >
-              Exit Workout
-            </AlertDialogAction>
-          </AlertDialogFooter>
+          <ContactForm />
         </AlertDialogContent>
       </AlertDialog>
     </>

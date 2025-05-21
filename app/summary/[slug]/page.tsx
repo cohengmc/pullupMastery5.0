@@ -51,8 +51,21 @@ export default function SummaryPage() {
     return 5;
   };
 
+  // Calculate total reps based on workout type
+  const totalReps =
+    params.slug === "ladder-volume"
+      ? reps.reduce((sum: number, rep) => {
+          if (rep === "X") return sum;
+          const ladderSum = Array.from(
+            { length: rep as number },
+            (_, i) => (rep as number) - i
+          ).reduce((a, b) => a + b, 0);
+          return sum + ladderSum;
+        }, 0)
+      : reps.reduce((sum: number, rep) => sum + (rep === "X" ? 0 : (rep as number)), 0);
+
   return (
-    <div className="w-full h-screen bg-background text-foreground p-2 sm:p-4 flex flex-col overflow-hidden">
+    <div className="flex-1 w-full h-full bg-background text-foreground p-2 sm:p-4 flex flex-col overflow-hidden">
       {/* Header Section */}
       <div className="flex-none">
         <h1 className="text-xl sm:text-2xl md:text-3xl font-light tracking-wider mb-2 text-primary">
@@ -141,14 +154,7 @@ export default function SummaryPage() {
       <div className="flex-none mt-2 sm:mt-4 flex flex-col items-center gap-3">
         <div className="flex items-center gap-2">
           <span className="text-lg text-primary font-light">Total Reps:</span>
-          <span className="text-lg text-primary font-light">
-            {reps.reduce<number>((total, rep) => {
-              if (typeof rep === "number") {
-                return total + rep;
-              }
-              return total;
-            }, 0)}
-          </span>
+          <span className="text-lg text-primary font-light">{totalReps}</span>
         </div>
         <Link
           href="/"

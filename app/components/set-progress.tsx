@@ -10,7 +10,7 @@ interface SetProgressProps {
 
 export function SetProgress({ totalSets, currentSet, completedSets, currentValue }: SetProgressProps) {
   return (
-    <div className="flex gap-2 justify-center">
+    <div className="flex gap-2 justify-center flex-wrap">
       {Array.from({ length: totalSets }).map((_, index) => {
         const isComplete = index < completedSets.length
         const isCurrent = !isComplete && index === currentSet - 1

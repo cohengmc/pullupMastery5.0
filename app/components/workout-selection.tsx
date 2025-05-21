@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { cn } from "@/lib/utils"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const workouts = [
   {
@@ -20,22 +20,20 @@ const workouts = [
     slug: "ladder-volume",
     description: "5 sets with 30 second rest",
   },
-]
+];
 
 interface WorkoutSelectionProps {
-  className?: string
+  className?: string;
 }
 
 export function WorkoutSelection({ className }: WorkoutSelectionProps) {
   return (
-    <Card className={cn("w-full", className)}>
+    <Card className={cn("w-full border-none landscape:text-center", className)}>
       <CardHeader className="pb-2">
-        <CardTitle>
-          Select Your Workout
-        </CardTitle>
+        <CardTitle>Select Your Workout</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-3">
+        <div className="flex flex-col landscape:flex-row gap-3">
           {workouts.map((workout) => (
             <Link
               key={workout.slug}
@@ -45,14 +43,12 @@ export function WorkoutSelection({ className }: WorkoutSelectionProps) {
             >
               <div className="bg-primary/20 hover:bg-primary/40 rounded-xl p-4 transition-colors">
                 <h3 className="text-xl font-semibold mb-1">{workout.name}</h3>
-                <p className="text-primary/80 text-sm">
-                  {workout.description}
-                </p>
+                <p className="text-primary/80 text-sm">{workout.description}</p>
               </div>
             </Link>
           ))}
         </div>
       </CardContent>
     </Card>
-  )
-} 
+  );
+}

@@ -58,13 +58,13 @@ export default function TimerApp({
   return (
     <div
       className={cn(
-        "w-full h-screen bg-background text-foreground flex flex-col overflow-hidden select-none p-6"
+        "flex-1 w-full h-full bg-background text-foreground flex flex-col overflow-hidden select-none p-6"
       )}
     >
       {/* Header Section */}
       <div className="flex-none">
-        <div className="flex justify-start gap-2 items-end text-white text-sm mb-4">
-          <div className="text-xl sm:text-1xl md:text-3xl font-light tracking-wider mb-2 text-white">
+        <div className="flex justify-center landscape:justify-start gap-2 items-center text-white text-sm mb-4">
+          <div className="text-xl sm:text-1xl font-light tracking-wider text-white text-center w-min landscape:w-fit">
             Set {currentSet}
           </div>
           <SetProgress
@@ -79,10 +79,10 @@ export default function TimerApp({
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center">
         <div className="w-full">
-          <div className="bg-gray-900/50 rounded-3xl">
-            <div className="flex items-center justify-between">
-              <div className="flex-1 mr-8">
-                <div className="flex items-center justify-between">
+          <div className="">
+            <div className="flex flex-col landscape:flex-row items-center justify-between">
+              <div className="flex-1 landscape:mr-6 w-full">
+                <div className="flex items-center justify-around">
                   <div className="flex-col items-center justify-between">
                     <div className="flex items-center justify-between">
                       <div className="flex flex-col text-white">
@@ -131,7 +131,7 @@ export default function TimerApp({
                           setRepsComplete((prevReps) => prevReps + 1);
                           setIsRepButtonVisible(false);
                         }}
-                        className="w-48 bg-primary/30 text-primary rounded-full py-3 text-base font-medium hover:bg-primary/40 transition-colors"
+                        className="bg-primary/30 text-primary rounded-full py-3 px-6 text-base font-medium hover:bg-primary/40 transition-colors"
                       >
                         Rep Complete
                       </button>
@@ -154,10 +154,10 @@ export default function TimerApp({
                             setCurrentSet((prevSet) => prevSet - 1);
                           }
                         }}
-                        className={`w-48 rounded-full py-3 text-base font-medium transition-colors ${
+                        className={`rounded-full px-3 py-3 text-base font-medium transition-colors ${
                           isSetCompleted
-                            ? "bg-destructive/30 text-destructive hover:bg-destructive/40"
-                            : "bg-primary/30 text-primary hover:bg-primary/40"
+                            ? "bg-destructive/30 text-destructive hover:bg-destructive/40 px-3" 
+                            : "bg-primary/30 text-primary hover:bg-primary/40 px-6"
                         }`}
                       >
                         {isSetCompleted ? "Undo Set Complete" : "Set Complete"}
@@ -167,7 +167,7 @@ export default function TimerApp({
                 </div>
               </div>
 
-              <div className="relative w-60 h-60">
+              <div className="relative mt-6 landscape:mt-0 w-70 h-70 landscape:w-60 landscape:h-60">
                 <ProgressCircle
                   progress={progress}
                   seconds={timeLeft > 0 ? timeLeft.toString() : null}

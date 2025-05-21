@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 import { useState, useEffect, useCallback } from "react";
 import NumberWheel from "../number-wheel";
 import { HomeButton } from "../home-button";
+import { EmailButton } from "../email-button";
+
 
 interface Day1TimerProps {
   onWorkoutComplete: (completedSets: (number | "X")[]) => void;
@@ -117,13 +119,13 @@ export default function Day1Timer({ onWorkoutComplete }: Day1TimerProps) {
   return (
     <div
       className={cn(
-        "w-full h-screen bg-background text-foreground flex flex-col overflow-hidden select-none p-6"
+        "flex-1 w-full h-full bg-background text-foreground flex flex-col overflow-hidden select-none p-6"
       )}
     >
       {/* Header Section */}
       <div className="flex-none">
-        <div className="flex justify-start gap-2 items-end text-white text-sm mb-4">
-          <div className="text-xl sm:text-1xl md:text-3xl font-light tracking-wider mb-2 text-white">
+        <div className="flex justify-center landscape:justify-start gap-2 items-end text-white text-sm mb-4">
+          <div className="text-xl sm:text-1xl font-light tracking-wider mb-2 text-white">
             Set {currentSet}
           </div>
           <SetProgress
@@ -138,10 +140,10 @@ export default function Day1Timer({ onWorkoutComplete }: Day1TimerProps) {
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center">
         <div className="w-full">
-          <div className="bg-gray-900/50 rounded-3xl">
-            <div className="flex items-center justify-between">
-              <div className="flex-1 mr-8">
-                <div className="flex items-center justify-between">
+          <div className="">
+            <div className="flex flex-col landscape:flex-row items-center justify-between">
+              <div className="flex-1 landscape:mr-6 w-full">
+                <div className="flex items-center justify-around">
                   <div className="flex-col items-center justify-between">
                     <div className="flex items-center justify-between">
                       <div className="flex flex-col text-white">
@@ -178,7 +180,7 @@ export default function Day1Timer({ onWorkoutComplete }: Day1TimerProps) {
                     {!isResting && (
                       <button
                         onClick={handleSetComplete}
-                        className="w-48 bg-primary/30 text-primary rounded-full py-3 text-base font-medium hover:bg-primary/40 transition-colors"
+                        className="bg-primary/30 text-primary rounded-full px-6 py-3 text-base font-medium hover:bg-primary/40 transition-colors"
                       >
                         Set Complete
                       </button>
@@ -196,7 +198,7 @@ export default function Day1Timer({ onWorkoutComplete }: Day1TimerProps) {
                 </div>
               </div>
 
-              <div className="relative w-60 h-60">
+              <div className="relative mt-6 landscape:mt-0 landscape:w-60 landscape:h-60">
                 <ProgressCircle
                   progress={isActive ? progress : 0}
                   seconds={isActive ? formatTime(timeLeft) : null}
@@ -209,6 +211,9 @@ export default function Day1Timer({ onWorkoutComplete }: Day1TimerProps) {
 
       {/* Home Button */}
       <HomeButton />
+
+      {/* Email Button */}
+      <EmailButton />
     </div>
   );
 }
