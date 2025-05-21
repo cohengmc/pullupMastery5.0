@@ -10,9 +10,9 @@ export async function submitContactForm(formData: FormData) {
     const email = formData.get("email") as string;
     const message = formData.get("message") as string;
 
-    if (!name || !email || !message) {
+    if (!message) {
       return {
-        message: "Please fill in all fields",
+        message: "Please write a message :)",
         error: true,
       };
     }
