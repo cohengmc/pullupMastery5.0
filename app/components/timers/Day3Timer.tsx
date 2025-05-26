@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { HomeButton } from "../home-button";
+import { EmailButton } from "../email-button";
 
 interface TimerAppProps {
   workoutType: "max-day" | "sub-max-volume" | "ladder-volume";
@@ -141,22 +142,29 @@ export default function TimerApp({
                         onClick={() => {
                           if (!isSetCompleted) {
                             setSetsComplete((prevSets) => prevSets + 1);
-                            setCompletedRepsSets((prevSets) => [...prevSets, repsComplete]);
+                            setCompletedRepsSets((prevSets) => [
+                              ...prevSets,
+                              repsComplete,
+                            ]);
                             setRepsComplete(0);
                             setIsSetCompleted(true);
                             startTimer();
                             setCurrentSet((prevSet) => prevSet + 1);
                           } else {
                             setSetsComplete((prevSets) => prevSets - 1);
-                            setCompletedRepsSets((prevSets) => prevSets.slice(0, -1));
-                            setRepsComplete(completedRepsSets[completedRepsSets.length - 1]);
+                            setCompletedRepsSets((prevSets) =>
+                              prevSets.slice(0, -1)
+                            );
+                            setRepsComplete(
+                              completedRepsSets[completedRepsSets.length - 1]
+                            );
                             setIsSetCompleted(false);
                             setCurrentSet((prevSet) => prevSet - 1);
                           }
                         }}
                         className={`rounded-full px-3 py-3 text-base font-medium transition-colors ${
                           isSetCompleted
-                            ? "bg-destructive/30 text-destructive hover:bg-destructive/40 px-3" 
+                            ? "bg-destructive/30 text-destructive hover:bg-destructive/40 px-3"
                             : "bg-primary/30 text-primary hover:bg-primary/40 px-6"
                         }`}
                       >
@@ -178,8 +186,12 @@ export default function TimerApp({
         </div>
       </div>
 
-      {/* Home Button */}
-      <HomeButton />
+      <div className="flex">
+        {/* Email Button */}
+        <EmailButton />
+        {/* Home Button */}
+        <HomeButton />
+      </div>
     </div>
   );
 }

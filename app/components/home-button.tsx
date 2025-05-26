@@ -19,7 +19,7 @@ export function HomeButton() {
   return (
     <>
       <button
-        className={`absolute right-3 bottom-3 center p-3 rounded-full transition-colors ${
+        className={`md:relative md:ml-auto md:-mr-6 absolute right-3 bottom-3 center p-3 rounded-full transition-colors ${
           isHovered ? "bg-destructive/30" : "bg-primary/30"
         }`}
         onMouseEnter={() => setIsHovered(true)}
@@ -43,7 +43,7 @@ export function HomeButton() {
           <AlertDialogFooter className="flex-row gap-2">
             <AlertDialogAction
               className="h-8 px-3 text-sm bg-primary/30 text-primary hover:bg-primary/40 flex-1"
-              onClick={() => {}} 
+              onClick={() => {}}
             >
               Keep Going
             </AlertDialogAction>

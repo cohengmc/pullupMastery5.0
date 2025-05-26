@@ -9,7 +9,6 @@ import NumberWheel from "../number-wheel";
 import { HomeButton } from "../home-button";
 import { EmailButton } from "../email-button";
 
-
 interface Day1TimerProps {
   onWorkoutComplete: (completedSets: (number | "X")[]) => void;
 }
@@ -190,7 +189,9 @@ export default function Day1Timer({ onWorkoutComplete }: Day1TimerProps) {
                         min={wheelConfig.min}
                         max={wheelConfig.max}
                         value={wheelValue}
-                        onChange={(value) => setWheelValue(value === null ? "X" : value)}
+                        onChange={(value) =>
+                          setWheelValue(value === null ? "X" : value)
+                        }
                         completedReps={completedReps}
                       />
                     )}
@@ -209,11 +210,12 @@ export default function Day1Timer({ onWorkoutComplete }: Day1TimerProps) {
         </div>
       </div>
 
-      {/* Home Button */}
-      <HomeButton />
-
-      {/* Email Button */}
-      <EmailButton />
+      <div className="flex">
+        {/* Email Button */}
+        <EmailButton />
+        {/* Home Button */}
+        <HomeButton />
+      </div>
     </div>
   );
 }

@@ -7,6 +7,7 @@ import { useState, useEffect, useCallback } from "react";
 import NumberWheel from "../number-wheel";
 import { cn } from "@/lib/utils";
 import { HomeButton } from "../home-button";
+import { EmailButton } from "../email-button";
 
 const getLastNumericalRep = (reps: (number | "X")[]) => {
   for (let i = reps.length - 1; i >= 0; i--) {
@@ -124,8 +125,8 @@ export default function Day2Timer({ onWorkoutComplete }: Day2TimerProps) {
                         {completedReps.length === 0 && !isResting ? (
                           <div className="text-6xl font-light tracking-wider text-primary">
                             <div>50%</div>
-                            <div>Max</div>
-                            <div>Reps</div>
+                            <div className="text-4xl">Max</div>
+                            <div className="text-4xl">Reps</div>
                           </div>
                         ) : isResting ? (
                           <div className="text-6xl font-light tracking-wider text-primary">
@@ -208,8 +209,12 @@ export default function Day2Timer({ onWorkoutComplete }: Day2TimerProps) {
         </div>
       </div>
 
-      {/* Home Button */}
-      <HomeButton />
+      <div className="flex">
+        {/* Email Button */}
+        <EmailButton />
+        {/* Home Button */}
+        <HomeButton />
+      </div>
     </div>
   );
 }

@@ -1,4 +1,6 @@
-import { WorkoutSelection } from "@/components/workout-selection"
+"use client";
+
+import { WorkoutSelection } from "@/components/workout-selection";
 
 export default function Home() {
   return (
@@ -11,5 +13,5 @@ export default function Home() {
         </div>
       </div>
     </>
-  )
+  );
 }
