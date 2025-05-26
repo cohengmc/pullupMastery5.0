@@ -80,13 +80,17 @@ const WakeLockWithFallback: React.FC = () => {
     disableNoSleep 
   } = useFallbackNoSleep();
 
+  // Initial wake lock request
   useEffect(() => {
-    // Try to use Wake Lock API first, fall back to video method if not supported
-    if (isSupported) {
-      requestWakeLock();
-    } else {
-      enableNoSleep();
-    }
+    const initializeWakeLock = async () => {
+      if (isSupported) {
+        await requestWakeLock();
+      } else {
+        enableNoSleep();
+      }
+    };
+
+    initializeWakeLock();
 
     // Clean up on unmount
     return () => {
@@ -98,37 +102,49 @@ const WakeLockWithFallback: React.FC = () => {
     };
   }, [isSupported]);
 
-  // For handling visibility changes (e.g., switching tabs and coming back)
+  // Handle visibility changes and page focus
   useEffect(() => {
-    const handleVisibilityChange = () => {
+    const handleVisibilityChange = async () => {
       if (document.visibilityState === 'visible') {
         if (isSupported) {
-          requestWakeLock();
+          await requestWakeLock();
         } else {
           enableNoSleep();
         }
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [isSupported]);
-
-  // User interaction is required on iOS before video autoplay can work
-  useEffect(() => {
-    const handleUserInteraction = () => {
-      if (!isSupported && !isFallbackActive) {
+    const handleFocus = async () => {
+      if (isSupported) {
+        await requestWakeLock();
+      } else {
         enableNoSleep();
       }
     };
 
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [isSupported]);
+
+  // Handle user interactions for iOS
+  useEffect(() => {
+    const handleUserInteraction = async () => {
+      if (!isSupported && !isFallbackActive) {
+        enableNoSleep();
+      } else if (isSupported && !isWakeLockActive) {
+        await requestWakeLock();
+      }
+    };
+
     // Add event listeners for common user interactions
-    const events = ['click', 'touchstart', 'keypress'];
+    const events = ['click', 'touchstart', 'keypress', 'mousemove'];
     events.forEach(event => {
-      document.addEventListener(event, handleUserInteraction, { once: true });
+      document.addEventListener(event, handleUserInteraction);
     });
 
     return () => {
@@ -136,9 +152,22 @@ const WakeLockWithFallback: React.FC = () => {
         document.removeEventListener(event, handleUserInteraction);
       });
     };
-  }, [isSupported, isFallbackActive]);
+  }, [isSupported, isFallbackActive, isWakeLockActive]);
 
-  // This component doesn't render anything visible
+  // Periodic wake lock check and re-request
+  useEffect(() => {
+    const checkAndReRequestWakeLock = async () => {
+      if (isSupported && !isWakeLockActive) {
+        await requestWakeLock();
+      } else if (!isSupported && !isFallbackActive) {
+        enableNoSleep();
+      }
+    };
+
+    const interval = setInterval(checkAndReRequestWakeLock, 5000);
+    return () => clearInterval(interval);
+  }, [isSupported, isWakeLockActive, isFallbackActive]);
+
   return null;
 };
 
