@@ -28,7 +28,7 @@ interface WorkoutSelectionProps {
 
 export function WorkoutSelection({ className }: WorkoutSelectionProps) {
   return (
-    <Card className={cn("w-full border-none landscape:text-center", className)}>
+    <Card className={cn("w-full border-none landscape:text-center bg-transparent shadow-transparent", className)}>
       <CardHeader className="pb-2">
         <CardTitle>Select Your Workout</CardTitle>
       </CardHeader>

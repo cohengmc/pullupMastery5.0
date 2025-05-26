@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { AlertCircle } from "lucide-react";
 import { useParams, useSearchParams } from "next/navigation";
+import { HomeButton } from "app/components/home-button";
+import { EmailButton } from "app/components/email-button";
 
 const workoutNames = {
   "max-day": "Max Day",
@@ -62,7 +64,10 @@ export default function SummaryPage() {
           ).reduce((a, b) => a + b, 0);
           return sum + ladderSum;
         }, 0)
-      : reps.reduce((sum: number, rep) => sum + (rep === "X" ? 0 : (rep as number)), 0);
+      : reps.reduce(
+          (sum: number, rep) => sum + (rep === "X" ? 0 : (rep as number)),
+          0
+        );
 
   return (
     <div className="flex-1 w-full h-full bg-background text-foreground p-2 sm:p-4 flex flex-col overflow-hidden">
@@ -156,12 +161,18 @@ export default function SummaryPage() {
           <span className="text-lg text-primary font-light">Total Reps:</span>
           <span className="text-lg text-primary font-light">{totalReps}</span>
         </div>
-        <Link
+        {/* <Link
           href="/"
           className="bg-primary/30 text-primary hover:bg-primary/40 transition-colors rounded-full py-2 px-4 text-sm font-medium"
         >
           Back to Home
-        </Link>
+        </Link> */}
+      </div>
+      <div className="flex">
+        {/* Email Button */}
+        <EmailButton />
+        {/* Home Button */}
+        <HomeButton />
       </div>
     </div>
   );

@@ -21,17 +21,13 @@ export function EmailButton() {
     <>
       <button
         className={`md:relative md:-ml-6 absolute left-3 bottom-3 center p-3 rounded-full transition-colors ${
-          isHovered ? "bg-destructive/30" : "bg-primary/30"
+          isHovered ? "bg-primary/40" : "bg-primary/30"
         }`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onClick={() => setIsOpen(true)}
       >
-        <CircleHelp
-          className={`w-6 h-6 ${
-            isHovered ? "text-destructive" : "text-primary"
-          }`}
-        />
+        <CircleHelp className={`w-6 h-6 text-primary`} />
       </button>
 
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>

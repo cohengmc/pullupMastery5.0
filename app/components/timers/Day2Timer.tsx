@@ -99,8 +99,8 @@ export default function Day2Timer({ onWorkoutComplete }: Day2TimerProps) {
     >
       {/* Header Section */}
       <div className="flex-none">
-        <div className="flex justify-center landscape:justify-start gap-2 items-center text-white text-sm mb-4">
-          <div className="text-xl sm:text-1xl font-light tracking-wider text-white text-center">
+        <div className="flex justify-center landscape:justify-start gap-2 items-center text-sm mb-4">
+          <div className="text-xl sm:text-1xl font-light tracking-wider text-center">
             Set {currentSet}
           </div>
           <SetProgress
@@ -120,8 +120,8 @@ export default function Day2Timer({ onWorkoutComplete }: Day2TimerProps) {
               <div className="flex-1 landscape:mr-6 w-full">
                 <div className="flex items-center justify-around">
                   <div className="flex-col items-center justify-between">
-                    <div className="flex items-center justify-between">
-                      <div className="flex flex-col text-white">
+                    <div className="flex items-center justify-between ">
+                      <div className="flex flex-col">
                         {completedReps.length === 0 && !isResting ? (
                           <div className="text-6xl font-light tracking-wider text-primary">
                             <div>50%</div>
@@ -148,8 +148,8 @@ export default function Day2Timer({ onWorkoutComplete }: Day2TimerProps) {
                               return (
                                 <>
                                   <div>50%</div>
-                                  <div>Max</div>
-                                  <div>Reps</div>
+                                  <div className="text-4xl">Max</div>
+                                  <div className="text-4xl">Reps</div>
                                 </>
                               );
                             })()}
@@ -157,12 +157,12 @@ export default function Day2Timer({ onWorkoutComplete }: Day2TimerProps) {
                         )}
                       </div>
                     </div>
-                    <div className="mt-8 flex justify-start gap-1 text-white text-sm mb-4">
+                    <div className="mt-8 flex justify-center gap-1 text-sm mb-4">
                       <div>
                         {isResting ? "Next: Max Reps" : "Next: 1 Minute Rest"}
                       </div>
                     </div>
-                    <div className="flex space-x-4">
+                    {/* <div className="flex space-x-4">
                       {isActive && (
                         <button
                           onClick={handleFastForward}
@@ -172,7 +172,7 @@ export default function Day2Timer({ onWorkoutComplete }: Day2TimerProps) {
                           FF
                         </button>
                       )}
-                    </div>
+                    </div> */}
                   </div>
                   <div>
                     {!isResting && (
@@ -207,13 +207,6 @@ export default function Day2Timer({ onWorkoutComplete }: Day2TimerProps) {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="flex">
-        {/* Email Button */}
-        <EmailButton />
-        {/* Home Button */}
-        <HomeButton />
       </div>
     </div>
   );

@@ -123,8 +123,8 @@ export default function Day1Timer({ onWorkoutComplete }: Day1TimerProps) {
     >
       {/* Header Section */}
       <div className="flex-none">
-        <div className="flex justify-center landscape:justify-start gap-2 items-end text-white text-sm mb-4">
-          <div className="text-xl sm:text-1xl font-light tracking-wider mb-2 text-white">
+        <div className="flex justify-center landscape:justify-start gap-2 items-end text-sm mb-4">
+          <div className="text-xl sm:text-1xl font-light tracking-wider mb-2">
             Set {currentSet}
           </div>
           <SetProgress
@@ -145,7 +145,7 @@ export default function Day1Timer({ onWorkoutComplete }: Day1TimerProps) {
                 <div className="flex items-center justify-around">
                   <div className="flex-col items-center justify-between">
                     <div className="flex items-center justify-between">
-                      <div className="flex flex-col text-white">
+                      <div className="flex flex-col">
                         {isResting ? (
                           <div className="text-6xl font-light tracking-wider text-primary">
                             Rest
@@ -158,7 +158,7 @@ export default function Day1Timer({ onWorkoutComplete }: Day1TimerProps) {
                         )}
                       </div>
                     </div>
-                    <div className="mt-8 flex justify-start gap-1 text-white text-sm mb-4">
+                    <div className="mt-8 flex justify-center gap-1 text-sm mb-4">
                       <div>
                         {isResting ? "Next: Max Reps" : "Next: 5 Minute Rest"}
                       </div>
@@ -208,13 +208,6 @@ export default function Day1Timer({ onWorkoutComplete }: Day1TimerProps) {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="flex">
-        {/* Email Button */}
-        <EmailButton />
-        {/* Home Button */}
-        <HomeButton />
       </div>
     </div>
   );

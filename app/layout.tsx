@@ -20,10 +20,14 @@ const inter = Inter({ subsets: ["latin"] });
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.className} h-full`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${inter.className} h-full`}
+      suppressHydrationWarning
+    >
       <head>
         <link
           rel="stylesheet"
@@ -37,10 +41,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <MainLayout>
-            {children}
-          </MainLayout>
-          {/* <WakeLockControl /> */}
+        <MainLayout>{children}</MainLayout>
+        <WakeLockControl />
         </ThemeProvider>
       </body>
     </html>

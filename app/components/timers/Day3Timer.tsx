@@ -64,8 +64,8 @@ export default function TimerApp({
     >
       {/* Header Section */}
       <div className="flex-none">
-        <div className="flex justify-center landscape:justify-start gap-2 items-center text-white text-sm mb-4">
-          <div className="text-xl sm:text-1xl font-light tracking-wider text-white text-center w-min landscape:w-fit">
+        <div className="flex justify-center landscape:justify-start gap-2 items-center text-sm mb-4">
+          <div className="text-xl sm:text-1xl font-light tracking-wider text-center w-min landscape:w-fit">
             Set {currentSet}
           </div>
           <SetProgress
@@ -86,7 +86,7 @@ export default function TimerApp({
                 <div className="flex items-center justify-around">
                   <div className="flex-col items-center justify-between">
                     <div className="flex items-center justify-between">
-                      <div className="flex flex-col text-white">
+                      <div className="flex flex-col">
                         {isActive ? (
                           <div className="text-6xl font-light tracking-wider text-primary">
                             Rest
@@ -99,7 +99,7 @@ export default function TimerApp({
                         )}
                       </div>
                     </div>
-                    <div className="mt-8 flex justify-start gap-1 text-white text-sm mb-4">
+                    <div className="mt-8 flex justify-center gap-1 text-sm mb-4">
                       <div>
                         Next:{" "}
                         {isActive
@@ -107,7 +107,7 @@ export default function TimerApp({
                           : "Rest"}
                       </div>
                     </div>
-                    <div className="mt-8 flex space-x-4">
+                    {/* <div className="mt-8 flex space-x-4">
                       {isActive && (
                         <button
                           onClick={() => {
@@ -121,7 +121,7 @@ export default function TimerApp({
                           FF
                         </button>
                       )}
-                    </div>
+                    </div> */}
                   </div>
                   <div>
                     {isRepButtonVisible && !isActive && (
@@ -184,13 +184,6 @@ export default function TimerApp({
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="flex">
-        {/* Email Button */}
-        <EmailButton />
-        {/* Home Button */}
-        <HomeButton />
       </div>
     </div>
   );

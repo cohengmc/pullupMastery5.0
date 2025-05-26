@@ -11,7 +11,7 @@ export const WakeLockControl = () => {
   return (
     <>
       {keepScreenOn && <WakeLockWithFallback />}
-      <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2 bg-background/80 backdrop-blur-sm p-2 rounded-lg shadow-lg">
+      {/* <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2 bg-background/80 backdrop-blur-sm p-2 rounded-lg shadow-lg">
         <label className="flex items-center gap-2 text-sm">
           <input
             type="checkbox"
@@ -26,7 +26,7 @@ export const WakeLockControl = () => {
             (Using fallback)
           </span>
         )}
-      </div>
+      </div> */}
     </>
   );
 }; 

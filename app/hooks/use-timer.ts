@@ -7,19 +7,23 @@ export function useTimer(initialSeconds: number = 60) {
   const [isActive, setIsActive] = useState(false)
   const [selectedPreset, setSelectedPreset] = useState(initialSeconds)
   const [progress, setProgress] = useState(100)
+  const [startTime, setStartTime] = useState<number | null>(null)
 
   const startTimer = useCallback(() => {
     setIsActive(true)
+    setStartTime(Date.now())
   }, [])
 
   const pauseTimer = useCallback(() => {
     setIsActive(false)
+    setStartTime(null)
   }, [])
 
   const stopTimer = useCallback(() => {
     setIsActive(false)
     setTimeLeft(selectedPreset)
     setProgress(100)
+    setStartTime(null)
   }, [selectedPreset])
 
   const setPresetTime = useCallback((seconds: number) => {
@@ -27,6 +31,7 @@ export function useTimer(initialSeconds: number = 60) {
     setTimeLeft(seconds)
     setProgress(100)
     setIsActive(false)
+    setStartTime(null)
   }, [])
 
   useEffect(() => {
@@ -34,14 +39,17 @@ export function useTimer(initialSeconds: number = 60) {
 
     if (isActive && timeLeft > 0) {
       interval = setInterval(() => {
-        setTimeLeft((prevTime) => {
-          const newTime = prevTime - 0.1
+        if (startTime) {
+          const elapsedSeconds = (Date.now() - startTime) / 1000
+          const newTime = Math.max(0, selectedPreset - elapsedSeconds)
+          setTimeLeft(newTime)
           setProgress((newTime / selectedPreset) * 100)
-          return newTime > 0 ? newTime : 0
-        })
+          
+          if (newTime === 0) {
+            setIsActive(false)
+          }
+        }
       }, 100)
-    } else if (timeLeft === 0) {
-      setIsActive(false)
     }
 
     return () => {
@@ -49,7 +57,7 @@ export function useTimer(initialSeconds: number = 60) {
         clearInterval(interval)
       }
     }
-  }, [isActive, timeLeft, selectedPreset])
+  }, [isActive, selectedPreset, startTime])
 
   return {
     timeLeft: Math.ceil(timeLeft),
