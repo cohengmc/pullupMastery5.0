@@ -70,7 +70,7 @@ export default function SummaryPage() {
         );
 
   return (
-    <div className="flex-1 w-full h-full bg-background text-foreground p-2 sm:p-4 flex flex-col overflow-hidden">
+    <div className="flex-1 w-full h-full bg-background text-foreground p-2 sm:p-4 flex flex-col overflow-scroll">
       {/* Header Section */}
       <div className="flex-none">
         <h1 className="text-xl sm:text-2xl md:text-3xl font-light tracking-wider mb-2 text-primary">

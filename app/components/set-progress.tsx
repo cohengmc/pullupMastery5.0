@@ -20,7 +20,7 @@ export function SetProgress({ totalSets, currentSet, completedSets, currentValue
             key={index}
             className={cn(
               "w-12 h-12 rounded-lg border-2 flex items-center justify-center transition-colors",
-              isComplete && "bg-green-950/30 border-green-500",
+              isComplete && "bg-green-200 border-green-500",
               isCurrent && "bg-primary/20 border-primary",
               !isComplete && !isCurrent && "bg-destructive/20 border-destructive"
             )}

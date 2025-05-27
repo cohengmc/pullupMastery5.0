@@ -63,12 +63,12 @@ export default function Day2Timer({ onWorkoutComplete }: Day2TimerProps) {
   }, [wheelValue, updateWheelConfig]);
 
   useEffect(() => {
-    if (timeLeft === 0 && isActive) {
+    if (timeLeft === 0) {
       stopTimer();
       setIsResting(false);
       addCompletedRep();
     }
-  }, [timeLeft, isActive, stopTimer, addCompletedRep]);
+  }, [timeLeft, stopTimer, addCompletedRep]);
 
   useEffect(() => {
     if (completedReps.length === 10) {

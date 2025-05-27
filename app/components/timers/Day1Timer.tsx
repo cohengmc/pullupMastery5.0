@@ -84,13 +84,13 @@ export default function Day1Timer({ onWorkoutComplete }: Day1TimerProps) {
   }, [currentSet, wheelValue, onWorkoutComplete]);
 
   useEffect(() => {
-    if (timeLeft === 0 && isActive) {
+    if (timeLeft === 0) {
       stopTimer();
       setIsResting(false);
       setShowNumberWheel(false);
       completeSet();
     }
-  }, [timeLeft, isActive, stopTimer, completeSet]);
+  }, [timeLeft, stopTimer, completeSet]);
 
   const handleSetComplete = () => {
     setTimeLeft(300);
@@ -163,7 +163,7 @@ export default function Day1Timer({ onWorkoutComplete }: Day1TimerProps) {
                         {isResting ? "Next: Max Reps" : "Next: 5 Minute Rest"}
                       </div>
                     </div>
-                    <div className="mt-8 flex space-x-4">
+                    {/* <div className="mt-8 flex space-x-4">
                       {isActive && (
                         <button
                           onClick={handleFastForward}
@@ -173,7 +173,7 @@ export default function Day1Timer({ onWorkoutComplete }: Day1TimerProps) {
                           FF
                         </button>
                       )}
-                    </div>
+                    </div> */}
                   </div>
                   <div>
                     {!isResting && (
