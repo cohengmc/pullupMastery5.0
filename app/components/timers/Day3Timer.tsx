@@ -51,7 +51,7 @@ export default function TimerApp({
   };
 
   useEffect(() => {
-    if (setsComplete === getMaxSets()) {
+    if (setsComplete === getMaxSets() && timeLeft === 0) {
       handleWorkoutComplete();
     }
   }, [setsComplete, handleWorkoutComplete]);
@@ -88,8 +88,13 @@ export default function TimerApp({
                     <div className="flex items-center justify-between">
                       <div className="flex flex-col">
                         {isActive ? (
-                          <div className="text-6xl font-light tracking-wider text-primary">
-                            Rest
+                          <div>
+                            <div className="text-6xl font-light tracking-wider text-transparent">
+                              _
+                            </div>
+                            <div className="text-6xl font-light tracking-wider text-primary">
+                              Rest
+                            </div>
                           </div>
                         ) : (
                           <div className="text-6xl font-light tracking-wider text-primary">
@@ -107,7 +112,7 @@ export default function TimerApp({
                           : "Rest"}
                       </div>
                     </div>
-                    {/* <div className="mt-8 flex space-x-4">
+                    <div className="mt-8 flex space-x-4">
                       {isActive && (
                         <button
                           onClick={() => {
@@ -121,7 +126,7 @@ export default function TimerApp({
                           FF
                         </button>
                       )}
-                    </div> */}
+                    </div>
                   </div>
                   <div>
                     {isRepButtonVisible && !isActive && (
@@ -148,8 +153,10 @@ export default function TimerApp({
                             ]);
                             setRepsComplete(0);
                             setIsSetCompleted(true);
-                            startTimer();
-                            setCurrentSet((prevSet) => prevSet + 1);
+                            //startTimer();
+                            setCurrentSet((prevSet) =>
+                              prevSet < 5 ? prevSet + 1 : prevSet
+                            );
                           } else {
                             setSetsComplete((prevSets) => prevSets - 1);
                             setCompletedRepsSets((prevSets) =>
@@ -159,13 +166,15 @@ export default function TimerApp({
                               completedRepsSets[completedRepsSets.length - 1]
                             );
                             setIsSetCompleted(false);
-                            setCurrentSet((prevSet) => prevSet - 1);
+                            setCurrentSet((prevSet) =>
+                              prevSet < 5 ? prevSet - 1 : prevSet
+                            );
                           }
                         }}
                         className={`rounded-full px-3 py-3 text-base font-medium transition-colors ${
                           isSetCompleted
                             ? "bg-destructive/30 text-destructive hover:bg-destructive/40 px-3"
-                            : "bg-primary/30 text-primary hover:bg-primary/40 px-6"
+                            : "bg-green-200 text-green-500 hover:bg-green-200/40 px-6"
                         }`}
                       >
                         {isSetCompleted ? "Undo Set Complete" : "Set Complete"}
