@@ -178,7 +178,7 @@ export default function Day2Timer({ onWorkoutComplete }: Day2TimerProps) {
                     {!isResting && (
                       <button
                         onClick={handleSetComplete}
-                        className="bg-primary/30 text-primary rounded-full px-6 py-3 text-base font-medium hover:bg-primary/40 transition-colors"
+                        className="bg-primary/30 text-primary rounded-full px-6 py-3 text-base font-medium hover:bg-primary/40 transition-colors border-primary border-2"
                       >
                         Set Complete
                       </button>

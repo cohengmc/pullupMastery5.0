@@ -113,7 +113,7 @@ export default function TimerApp({
                       </div>
                     </div>
                     <div className="mt-8 flex space-x-4">
-                      {isActive && (
+                      {/* {isActive && (
                         <button
                           onClick={() => {
                             stopTimer();
@@ -125,7 +125,7 @@ export default function TimerApp({
                         >
                           FF
                         </button>
-                      )}
+                      )} */}
                     </div>
                   </div>
                   <div>
@@ -137,7 +137,7 @@ export default function TimerApp({
                           setRepsComplete((prevReps) => prevReps + 1);
                           setIsRepButtonVisible(false);
                         }}
-                        className="bg-primary/30 text-primary rounded-full py-3 px-6 text-base font-medium hover:bg-primary/40 transition-colors"
+                        className="bg-primary/30 text-primary rounded-full py-3 px-6 text-base font-medium hover:bg-primary/40 transition-colors border-primary border-2"
                       >
                         Rep Complete
                       </button>
@@ -173,8 +173,8 @@ export default function TimerApp({
                         }}
                         className={`rounded-full px-3 py-3 text-base font-medium transition-colors ${
                           isSetCompleted
-                            ? "bg-destructive/30 text-destructive hover:bg-destructive/40 px-3"
-                            : "bg-green-200 text-green-500 hover:bg-green-200/40 px-6"
+                            ? "bg-destructive/30 text-destructive hover:bg-destructive/40 px-3 border-destructive border-2"
+                            : "bg-green-200 text-green-500 hover:bg-green-200/40 px-6 border-green-500 border-2"
                         }`}
                       >
                         {isSetCompleted ? "Undo Set Complete" : "Set Complete"}

@@ -122,7 +122,7 @@ export default function NumberWheel({
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
       className={cn(
-        "relative h-[200px] w-[120px] overflow-hidden bg-black rounded-lg select-none cursor-grab active:cursor-grabbing border-2",
+        "relative h-[200px] w-[120px] overflow-hidden bg-background rounded-lg select-none cursor-grab active:cursor-grabbing border-2",
         value === 'X' ? "border-destructive" : "border-green-500"
       )}
       role="slider"
@@ -152,8 +152,8 @@ export default function NumberWheel({
               className={cn(
                 "absolute h-[40px] w-full flex items-center justify-center font-mono text-2xl transition-all duration-200 pointer-events-none",
                 number === (value === 'X' ? 'X' : String(value).padStart(2, '0'))
-                  ? "text-white z-10" 
-                  : "text-gray-600"
+                  ? "text-foreground z-10" 
+                  : "text-foreground/50"
               )}
               style={{
                 transform: `
@@ -170,7 +170,7 @@ export default function NumberWheel({
           )
         })}
       </div>
-      <div className="absolute top-1/2 left-0 right-0 h-[40px] -translate-y-1/2 border-y border-gray-800 pointer-events-none" />
+      <div className="absolute top-1/2 left-0 right-0 h-[40px] -translate-y-1/2 border-y border-foreground/50 pointer-events-none" />
     </div>
   )
 }
